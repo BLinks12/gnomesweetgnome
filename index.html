@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$ GSG TERMINAL 4.0 // GNOMECORE</title>
+    <style>
+        :root {
+            --green: #00ff00;
+            --bg: #001100;
+            --terminal: #002200;
+            --error: #ff5555;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--green);
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .terminal {
+            max-width: 800px;
+            margin: 0 auto;
+            border: 1px solid var(--green);
+            padding: 20px;
+            background: var(--terminal);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.1);
+        }
+
+        .prompt {
+            color: var(--green);
+            margin: 10px 0;
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+        }
+
+        input {
+            background: transparent;
+            border: 1px solid var(--green);
+            color: var(--green);
+            padding: 8px;
+            font-family: inherit;
+            width: 300px;
+            margin: 5px 0;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: 1px solid var(--green);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+
+        button {
+            background: #003300;
+            border: 1px solid var(--green);
+            color: var(--green);
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        button:hover {
+            background: #004400;
+            box-shadow: 0 0 15px var(--green);
+        }
+
+        .loading {
+            border-left: 3px solid var(--green);
+            padding-left: 10px;
+            margin: 20px 0;
+        }
+
+        .gnome-display {
+            white-space: pre;
+            margin: 20px 0;
+            padding: 10px;
+            background: #001100;
+            border: 1px solid var(--green);
+            line-height: 1.2;
+            font-size: 1.1em;
+            cursor: pointer;
+        }
+
+        .cursor {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        .error {
+            color: var(--error);
+            border-left: 3px solid var(--error);
+            padding-left: 10px;
+            margin: 10px 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 2px;
+            background: #002200;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--green);
+            width: 0%;
+            transition: width 2s linear;
+        }
+
+        .history-panel {
+            border-top: 1px solid var(--green);
+            margin-top: 20px;
+            padding-top: 15px;
+        }
+
+        .gnome-id {
+            color: var(--green);
+            cursor: pointer;
+            margin: 5px 0;
+            padding: 2px 5px;
+        }
+
+        .gnome-id:hover {
+            background: rgba(0, 255, 0, 0.1);
+        }
+
+        .rarity-meter {
+            height: 4px;
+            background: #003300;
+            margin: 10px 0;
+        }
+
+        .rarity-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--green), #00ff88);
+            width: 0;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="prompt">$GSG TERMINAL v4.2.1</div>
+        <div class="prompt">INITIALIZING GNOMECORE SYSTEMS...</div>
+        <div class="prompt">SYSTEM STATUS: <span style="color: #00ff00">OPERATIONAL</span></div>
+
+        <div id="error" class="error"></div>
+
+        <div class="prompt">[INPUT] ENTER CREDENTIALS:</div>
+        <input type="email" id="email" placeholder="user@domain">
+
+        <div class="prompt">[INPUT] DESIGNATE GNOME ID:</div>
+        <input type="text" id="username" placeholder="GNOME-ALPHA-1">
+
+        <div class="prompt">[ACTION] INITIATE GENERATION:</div>
+        <button onclick="initiateGeneration()">EXECUTE GNOME_GEN.EXE</button>
+
+        <div id="loading" class="loading" style="display: none;">
+            <div>COMPILING BIO-ASCII STRUCTURE <span class="cursor">_</span></div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+
+        <div id="output"></div>
+
+        <div class="history-panel">
+            <div class="prompt">GNOME ARCHIVE [MAX 5 ENTRIES]</div>
+            <div id="history"></div>
+        </div>
+    </div>
+
+    <script>
+        const GNOME_COMPONENTS = {
+            HATS: [
+                { art: `  _===_  \n / ___ \\ `, rarity: 0.8 },
+                { art: `  .---.  \n /  o  \\ `, rarity: 0.6 },
+                { art: `   ___  \n /(•••)\\`, rarity: 0.4 },
+                { art: `  /###\\ \n /  █  \\`, rarity: 0.2 }
+            ],
+            FACES: [
+                { art: ` ( o o ) \n (  "  ) `, rarity: 0.7 },
+                { art: ` ( • • ) \n (  -  ) `, rarity: 0.5 },
+                { art: ` ( ◕ ◕ ) \n (  ~  ) `, rarity: 0.3 },
+                { art: ` ( ⚇ ⚇ ) \n (  °  ) `, rarity: 0.1 }
+            ],
+            BODIES: [
+                { art: `  /|\\   \n  / \\  `, rarity: 0.9 },
+                { art: `  /█\\   \n  / \\  `, rarity: 0.7 },
+                { art: `  /O\\   \n  / \\  `, rarity: 0.5 },
+                { art: `  /#\\   \n  / \\  `, rarity: 0.3 }
+            ],
+            FEET: [
+                { art: ` (=====) `, rarity: 0.8 },
+                { art: ` {-----} `, rarity: 0.6 },
+                { art: ` [|||||] `, rarity: 0.4 },
+                { art: ` (•••) `, rarity: 0.2 }
+            ]
+        };
+
+        const GNOME_DATA = {
+            TRAITS: [
+                "MYCELIUM NETWORK ACCESS",
+                "QUANTUM ROOT SYSTEM",
+                "CRYSTALLINE BEARD",
+                "PHOTOSYNTHETIC HAT",
+                "GEOMANCY PROTOCOLS",
+                "SPORE COMMUNICATION"
+            ],
+            LORE: [
+                "ANCIENT EARTHWARDEN PROTOCOL ACTIVATED",
+                "MYCOLOGICAL SENTIENCE CORE ENGAGED",
+                "GEOLOGICAL MEMORY BANKS INITIALIZED",
+                "PHOTONIC GROWTH MATRIX ACTIVE"
+            ]
+        };
+
+        let gnomeHistory = JSON.parse(localStorage.getItem('gnomeHistory') || '[]');
+
+        function terminalLog(message, speed = 30) {
+            const output = document.getElementById('output');
+            const div = document.createElement('div');
+            output.appendChild(div);
+            
+            let i = 0;
+            function typeWriter() {
+                if (i < message.length) {
+                    div.innerHTML += message.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, speed);
+                }
+            }
+            typeWriter();
+        }
+
+        function playSound(freq = 1000, duration = 0.1, type = 'square') {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            
+            osc.type = type;
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.1, ctx.currentTime);
+            
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            
+            osc.start();
+            osc.stop(ctx.currentTime + duration);
+        }
+
+        function generateGnomeDNA() {
+            return {
+                hat: getWeightedComponent('HATS'),
+                face: getWeightedComponent('FACES'),
+                body: getWeightedComponent('BODIES'),
+                feet: getWeightedComponent('FEET'),
+                timestamp: Date.now()
+            };
+        }
+
+        function getWeightedComponent(type) {
+            const components = GNOME_COMPONENTS[type];
+            const total = components.reduce((acc, curr) => acc + curr.rarity, 0);
+            let random = Math.random() * total;
+            
+            for(const component of components) {
+                if(random < component.rarity) return component;
+                random -= component.rarity;
+            }
+            return components[0];
+        }
+
+        function calculateRarity(dna) {
+            return ((dna.hat.rarity + dna.face.rarity + dna.body.rarity + dna.feet.rarity) / 4) * 100;
+        }
+
+        function saveToHistory(gnome) {
+            gnomeHistory.unshift(gnome);
+            if(gnomeHistory.length > 5) gnomeHistory.pop();
+            localStorage.setItem('gnomeHistory', JSON.stringify(gnomeHistory));
+            updateHistoryDisplay();
+        }
+
+        function updateHistoryDisplay() {
+            const history = document.getElementById('history');
+            history.innerHTML = gnomeHistory
+                .map(g => `<div class="gnome-id" onclick="loadGnome('${g.id}')">
+                    [${g.timestamp}] ${g.id} - ${g.rarity.toFixed(1)}%
+                </div>`)
+                .join('');
+        }
+
+        function loadGnome(id) {
+            const gnome = gnomeHistory.find(g => g.id === id);
+            if(gnome) displayGnome(gnome);
+            playSound(800, 0.2);
+        }
+
+        function displayGnome(data) {
+            const output = document.getElementById('output');
+            output.innerHTML = '';
+
+            const gnomeArt = `${data.dna.hat.art}\n${data.dna.face.art}\n${data.dna.body.art}\n${data.dna.feet.art}`;
+            
+            const pre = document.createElement('pre');
+            pre.className = 'gnome-display';
+            pre.textContent = gnomeArt;
+            pre.onclick = () => handleGnomeClick(data);
+            output.appendChild(pre);
+
+            const rarityBar = document.createElement('div');
+            rarityBar.className = 'rarity-meter';
+            rarityBar.innerHTML = `<div class="rarity-fill" style="width: ${data.rarity}%"></div>`;
+            output.appendChild(rarityBar);
+
+            terminalLog(`\nGNOME ID: ${data.id}`);
+            terminalLog(`\nUSER: ${data.username.toUpperCase()}`);
+            terminalLog(`\nRARITY: ${data.rarity.toFixed(1)}%`);
+            terminalLog(`\nTRAITS:`);
+            data.traits.forEach(t => terminalLog(` - ${t}`));
+            terminalLog(`\nLORE: ${data.lore}`);
+        }
+
+        function handleGnomeClick(data) {
+            const partIndex = prompt(`SELECT COMPONENT TO REGENERATE (1-4):\n1. Hat\n2. Face\n3. Body\n4. Feet`) - 1;
+            if(partIndex >= 0 && partIndex <= 3) {
+                const parts = ['HATS', 'FACES', 'BODIES', 'FEET'];
+                data.dna[parts[partIndex].toLowerCase()] = getWeightedComponent(parts[partIndex]);
+                data.rarity = calculateRarity(data.dna);
+                saveToHistory(data);
+                displayGnome(data);
+                playSound(1200, 0.1);
+            }
+        }
+
+        function initiateGeneration() {
+            const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value;
+            const error = document.getElementById('error');
+            const loading = document.getElementById('loading');
+            const progressFill = document.querySelector('.progress-fill');
+
+            error.textContent = '';
+            output.innerHTML = '';
+
+            if(!validateEmail(email) || !username) {
+                error.textContent = "ERROR: INVALID CREDENTIALS\nVALID EMAIL AND GNOME ID REQUIRED";
+                playSound(300, 0.3, 'sawtooth');
+                return;
+            }
+
+            loading.style.display = 'block';
+            progressFill.style.width = '100%';
+
+            setTimeout(() => {
+                loading.style.display = 'none';
+                progressFill.style.width = '0%';
+                
+                const dna = generateGnomeDNA();
+                const gnomeData = {
+                    id: `GNO-${Date.now().toString(36).toUpperCase()}`,
+                    username,
+                    dna,
+                    traits: getRandomTraits(3),
+                    lore: getRandomLore(),
+                    rarity: calculateRarity(dna),
+                    timestamp: Date.now()
+                };
+
+                saveToHistory(gnomeData);
+                displayGnome(gnomeData);
+                playSound();
+            }, 2000);
+        }
+
+        function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function getRandomTraits(count) {
+            return GNOME_DATA.TRAITS
+                .sort(() => Math.random() - 0.5)
+                .slice(0, count);
+        }
+
+        function getRandomLore() {
+            return GNOME_DATA.LORE[Math.floor(Math.random() * GNOME_DATA.LORE.length)];
+        }
+
+        // Initialize history display
+        updateHistoryDisplay();
+    </script>
+</body>
+</html>
