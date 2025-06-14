@@ -1,402 +1,3399 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>$ GSG TERMINAL 4.0 // GNOMECORE</title>
-    <style>
-        :root {
-            --green: #00ff00;
-            --bg: #001100;
-            --terminal: #002200;
-            --error: #ff5555;
-        }
-
-        body {
-            background: var(--bg);
-            color: var(--green);
-            font-family: 'Courier New', monospace;
-            margin: 0;
-            padding: 20px;
-            overflow-x: hidden;
-        }
-
-        .terminal {
-            max-width: 800px;
-            margin: 0 auto;
-            border: 1px solid var(--green);
-            padding: 20px;
-            background: var(--terminal);
-            box-shadow: 0 0 30px rgba(0, 255, 0, 0.1);
-        }
-
-        .prompt {
-            color: var(--green);
-            margin: 10px 0;
-            text-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
-        }
-
-        input {
-            background: transparent;
-            border: 1px solid var(--green);
-            color: var(--green);
-            padding: 8px;
-            font-family: inherit;
-            width: 300px;
-            margin: 5px 0;
-            transition: all 0.3s;
-        }
-
-        input:focus {
-            outline: 1px solid var(--green);
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
-        }
-
-        button {
-            background: #003300;
-            border: 1px solid var(--green);
-            color: var(--green);
-            padding: 10px 20px;
-            cursor: pointer;
-            margin: 10px 0;
-            transition: all 0.3s;
-            font-family: inherit;
-        }
-
-        button:hover {
-            background: #004400;
-            box-shadow: 0 0 15px var(--green);
-        }
-
-        .loading {
-            border-left: 3px solid var(--green);
-            padding-left: 10px;
-            margin: 20px 0;
-        }
-
-        .gnome-display {
-            white-space: pre;
-            margin: 20px 0;
-            padding: 10px;
-            background: #001100;
-            border: 1px solid var(--green);
-            line-height: 1.2;
-            font-size: 1.1em;
-            cursor: pointer;
-        }
-
-        .cursor {
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-            50% { opacity: 0; }
-        }
-
-        .error {
-            color: var(--error);
-            border-left: 3px solid var(--error);
-            padding-left: 10px;
-            margin: 10px 0;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 2px;
-            background: #002200;
-            margin: 10px 0;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--green);
-            width: 0%;
-            transition: width 2s linear;
-        }
-
-        .history-panel {
-            border-top: 1px solid var(--green);
-            margin-top: 20px;
-            padding-top: 15px;
-        }
-
-        .gnome-id {
-            color: var(--green);
-            cursor: pointer;
-            margin: 5px 0;
-            padding: 2px 5px;
-        }
-
-        .gnome-id:hover {
-            background: rgba(0, 255, 0, 0.1);
-        }
-
-        .rarity-meter {
-            height: 4px;
-            background: #003300;
-            margin: 10px 0;
-        }
-
-        .rarity-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--green), #00ff88);
-            width: 0;
-            transition: width 0.5s ease;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gnome Miners - $GNOME</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      image-rendering: pixelated;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: crisp-edges;
+    }
+    
+    body {
+      margin: 0;
+      font-family: 'VT323', 'Courier New', monospace;
+      background: #343E48;
+      color: #E0E0E0;
+      overflow: hidden;
+      height: 100vh;
+      user-select: none;
+      cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAADFJREFUOE9jZKAQMFKon2HUAAYvYGAgDEYwGgYwGGIZwHwy/s9A5BkwE4jZwHwyYgAANucA+36JbQcAAAAASUVORK5CYII='), default;
+    }
+    
+    .desktop {
+      position: relative;
+      height: 100vh;
+      background: #2E2925 url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABoSERBVHja7cEBDQAAAMKg909tDwcUAAAAAIBP82A5DEBCJCREQkIkJERCQiQkREQkIkJERCQiQkQkIkJERCQiQkQkIkJERCQiQkIkJCREQiQkREQkIjI/s38A0DqUe/IitnoAAAAASUVORK5CYII=') repeat;
+      background-image:
+        linear-gradient(rgba(0,0,0,0.5) 2px, transparent 2px),
+        linear-gradient(90deg, rgba(0,0,0,0.5) 2px, transparent 2px),
+        linear-gradient(rgba(0,0,0,0.3) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,0.3) 1px, transparent 1px);
+      background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+      background-position:-2px -2px, -2px -2px, -1px -1px, -1px -1px;
+      cursor: default;
+    }
+    
+    /* Menu Bar */
+    .menu-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 22px;
+      background: #C6C6C6;
+      border-bottom: 2px solid #000;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      z-index: 1000;
+      font-size: 16px;
+      color: #000;
+      font-weight: bold;
+      cursor: auto;
+    }
+    
+    .menu-item {
+      padding: 0 12px;
+      height: 22px;
+      line-height: 22px;
+      cursor: pointer;
+    }
+    
+    .menu-item:hover {
+      background: #000;
+      color: #fff;
+    }
+    
+    .menu-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-right: 10px;
+      cursor: auto;
+    }
+    
+    /* Desktop Icons */
+    .desktop-icon {
+      position: absolute;
+      width: 90px;
+      padding: 4px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.1s;
+    }
+    
+    .desktop-icon:hover .icon-image {
+      transform: translateY(-2px);
+    }
+    
+    .desktop-icon.selected {
+      background: rgba(100, 180, 255, 0.3);
+      border: 1px dotted #fff;
+    }
+    
+    .icon-image {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.5));
+      transition: transform 0.1s;
+    }
+    
+    .icon-label {
+      font-size: 14px;
+      color: #fff;
+      text-shadow: 1px 1px 1px rgba(0,0,0,1);
+      line-height: 1.2;
+      word-wrap: break-word;
+    }
+    
+    /* Window Styles */
+    .window {
+      position: fixed;
+      background: #C6C6C6;
+      border-top: 2px solid #FFFFFF;
+      border-left: 2px solid #FFFFFF;
+      border-right: 2px solid #000000;
+      border-bottom: 2px solid #000000;
+      box-shadow: 3px 3px 8px rgba(0,0,0,0.4);
+      display: none;
+      z-index: 1000;
+      min-width: 320px;
+      border-radius: 0;
+      cursor: auto;
+    }
+    
+    .window.active {
+      display: block;
+      animation: windowOpen 0.1s ease-out;
+    }
+    
+    @keyframes windowOpen {
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    
+    .window-header {
+      height: 22px;
+      background: #808080;
+      border-bottom: 2px solid #000;
+      display: flex;
+      align-items: center;
+      padding: 0 4px;
+      cursor: move;
+    }
+    
+    .window-header.active {
+      background: #000080;
+    }
+    
+    .window-title {
+      flex: 1;
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-shadow: 1px 1px 1px #000;
+    }
+    
+    .window-controls {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .window-button {
+      width: 16px;
+      height: 16px;
+      border-top: 1px solid #FFFFFF;
+      border-left: 1px solid #FFFFFF;
+      border-right: 1px solid #000000;
+      border-bottom: 1px solid #000000;
+      background: #C6C6C6;
+      cursor: pointer;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .close-button {
+      background: #C6C6C6;
+    }
+    
+    .window-content {
+      padding: 12px;
+      font-size: 16px;
+      color: #000;
+      overflow-y: auto;
+      max-height: calc(100vh - 100px);
+      cursor: auto;
+    }
+    
+    /* Main App Window */
+    #mainWindow {
+      width: 520px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    
+    /* Gnome Display */
+    .gnome-container {
+      background: #A0A0A0;
+      border: 2px solid #000;
+      box-shadow: inset 2px 2px 0px #808080, inset -2px -2px 0px #FFFFFF;
+      padding: 8px;
+      margin-top: 12px;
+      display: none;
+    }
+    
+    .gnome-viewer {
+      width: 100%;
+      height: 280px;
+      margin: 0 auto 12px;
+      border: 2px solid #000;
+      background: #4A4A52;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    
+    #gnomeCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    
+    .gnome-info {
+      border: 2px inset #808080;
+      padding: 8px;
+      margin-top: 8px;
+      background: #C6C6C6;
+    }
+    
+    .gnome-name {
+      font-size: 18px;
+      font-weight: bold;
+      color: #800000;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    
+    /* Form Elements */
+    .input-group {
+      margin-bottom: 12px;
+    }
+    
+    .input-group label {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 4px;
+      font-weight: bold;
+    }
+    
+    .text-input {
+      width: 100%;
+      padding: 4px 6px;
+      border: 2px inset #808080;
+      background: #fff;
+      font-family: 'VT323', monospace;
+      font-size: 16px;
+      cursor: text;
+    }
+    
+    /* Buttons */
+    .button {
+      padding: 6px 14px;
+      border-top: 2px solid #FFFFFF;
+      border-left: 2px solid #FFFFFF;
+      border-right: 2px solid #000000;
+      border-bottom: 2px solid #000000;
+      background: #C6C6C6;
+      font-family: 'VT323', monospace;
+      font-size: 16px;
+      cursor: pointer;
+      min-width: 80px;
+    }
+    
+    .button:active {
+      border-top: 2px solid #000000;
+      border-left: 2px solid #000000;
+      border-right: 2px solid #FFFFFF;
+      border-bottom: 2px solid #FFFFFF;
+    }
+    
+    .button:disabled {
+      color: #808080;
+      cursor: default;
+    }
+    
+    .button.primary {
+      font-weight: bold;
+    }
+    
+    /* Progress Bar */
+    .progress-container {
+      height: 20px;
+      border: 2px inset #808080;
+      background: #fff;
+      padding: 2px;
+      margin: 8px 0;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: #008000;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    
+    /* Status */
+    .status-text {
+      font-size: 16px;
+      margin: 8px 0;
+      padding: 4px;
+      background: #C6C6C6;
+      border: 2px inset #808080;
+      min-height: 24px;
+      color: #000;
+    }
+    
+    /* Morale Indicator */
+    .morale-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 8px 0;
+      padding: 4px;
+      background: #A0A0A0;
+      border: 2px solid #000;
+    }
+    
+    .morale-icon {
+      font-size: 24px;
+    }
+    
+    .morale-bar {
+      flex: 1;
+      height: 16px;
+      background: #fff;
+      border: 2px solid #000;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .morale-fill {
+      height: 100%;
+      background: linear-gradient(to right, #c0392b, #f1c40f, #2ecc71);
+      transition: width 0.5s ease;
+    }
+    
+    /* Rarity Colors */
+    .rank-apprentice-digger { color: #95a5a6; }
+    .rank-stone-mason { color: #3498db; }
+    .rank-crystal-scout { color: #9b59b6; }
+    .rank-master-gemcutter { color: #e67e22; }
+    .rank-deep-delver { color: #e74c3c; }
+    .rank-eldrich-geologist { 
+      background: linear-gradient(45deg, #ff00de, #00ff6a, #0099ff, #ff00de);
+      background-size: 400% 400%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: mythicShine 3s ease infinite;
+    }
+    
+    @keyframes mythicShine {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    /* Alert Dialog */
+    .alert {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #C6C6C6;
+      border-top: 2px solid #FFFFFF;
+      border-left: 2px solid #FFFFFF;
+      border-right: 2px solid #000000;
+      border-bottom: 2px solid #000000;
+      box-shadow: 3px 3px 8px rgba(0,0,0,0.4);
+      padding: 24px;
+      min-width: 250px;
+      color: #000;
+      text-align: center;
+      z-index: 10001;
+      display: none;
+      cursor: auto;
+    }
+    
+    .alert.show {
+      display: block;
+    }
+    
+    /* Share buttons */
+    .share-buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      justify-content: center;
+    }
+    
+    /* Gallery */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 8px;
+      padding: 8px;
+    }
+    
+    .gallery-item {
+      border: 2px solid #000;
+      background: #A0A0A0;
+      padding: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    
+    .gallery-item:hover {
+      background: #B8B8B8;
+    }
+    
+    .gallery-item-preview {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 4px;
+      border: 2px inset #808080;
+      background: #C6C6C6;
+    }
+    
+    /* Interactive elements */
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .action-button {
+      padding: 4px 8px;
+      font-size: 14px;
+      min-width: 70px;
+    }
+  </style>
 </head>
 <body>
-    <div class="terminal">
-        <div class="prompt">$GSG TERMINAL v4.2.1</div>
-        <div class="prompt">INITIALIZING GNOMECORE SYSTEMS...</div>
-        <div class="prompt">SYSTEM STATUS: <span style="color: #00ff00">OPERATIONAL</span></div>
-
-        <div id="error" class="error"></div>
-
-        <div class="prompt">[INPUT] ENTER CREDENTIALS:</div>
-        <input type="email" id="email" placeholder="user@domain">
-
-        <div class="prompt">[INPUT] DESIGNATE GNOME ID:</div>
-        <input type="text" id="username" placeholder="GNOME-ALPHA-1">
-
-        <div class="prompt">[ACTION] INITIATE GENERATION:</div>
-        <button onclick="initiateGeneration()">EXECUTE GNOME_GEN.EXE</button>
-
-        <div id="loading" class="loading" style="display: none;">
-            <div>COMPILING BIO-ASCII STRUCTURE <span class="cursor">_</span></div>
-            <div class="progress-bar">
-                <div class="progress-fill"></div>
-            </div>
-        </div>
-
-        <div id="output"></div>
-
-        <div class="history-panel">
-            <div class="prompt">GNOME ARCHIVE [MAX 5 ENTRIES]</div>
-            <div id="history"></div>
-        </div>
+  <div class="desktop">
+    <!-- Menu Bar -->
+    <div class="menu-bar">
+      <div class="menu-item" onclick="showAbout()">⛏️</div>
+      <div class="menu-item">File</div>
+      <div class="menu-item">Edit</div>
+      <div class="menu-item">Gnome</div>
+      <div class="menu-item">Help</div>
+      <div class="menu-right">
+        <span id="eventDisplay" style="font-weight: bold; margin-right: 15px;"></span>
+        <span id="clock">12:00 PM</span>
+      </div>
+    </div>
+    
+    <!-- Desktop Icons -->
+    <div class="desktop-icon" style="top: 40px; left: 20px;" ondblclick="openMainWindow()">
+      <div class="icon-image">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.1 36.9l-11-11a1 1 0 0 1 0-1.4l11-11a1 1 0 0 1 1.4 0l11 11a1 1 0 0 1 0 1.4l-11 11a1 1 0 0 1-1.4 0z" stroke="#D4AF37" fill="#F0E68C"/><path d="M22.8 35.5L13 25.7M33.3 24.3l-8.4-8.4" stroke="#A0522D"/><path d="M24.2 13.5l-2.8 2.8m5.6 5.6l-2.8 2.8" stroke="#000"/><path d="M21.4 16.3l5.6 5.6-2.8 2.8-5.6-5.6 2.8-2.8z" fill="#708090" stroke="#000"/></svg>
+      </div>
+      <div class="icon-label">Gnome Miners</div>
+    </div>
+    
+    <div class="desktop-icon" style="top: 40px; left: 120px;" ondblclick="openGalleryWindow()">
+      <div class="icon-image">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#000" stroke-width="2"><path d="M8 14h32v26H8z" fill="#8B4513"/><path d="M8 14l16-6 16 6v26H8V14z" stroke-linejoin="round" stroke-linecap="round"/><path d="M8 14l16 6 16-6M24 8v32" stroke-linejoin="round" stroke-linecap="round"/><path d="M16 22h16" stroke-linejoin="round" stroke-linecap="round" stroke-width="3" stroke="#FFD700"/></svg>
+      </div>
+      <div class="icon-label">The Barracks</div>
+    </div>
+    
+    <div class="desktop-icon" style="top: 40px; left: 220px;" ondblclick="openHelpWindow()">
+      <div class="icon-image">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none"><path d="M10 4v40l14-8 14 8V4H10z" stroke="#000" stroke-width="2" stroke-linejoin="round" fill="#F5DEB3"/><path d="M18 18h12M18 26h8" stroke="#000" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+      <div class="icon-label">Gnomepedia</div>
+    </div>
+    
+    <div class="desktop-icon" style="top: 150px; left: 20px;" ondblclick="window.open('https://pump.fun/', '_blank')">
+      <div class="icon-image">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="#F07E05"><path d="M24 4c-5.52 0-10 4.48-10 10v10h20V14c0-5.52-4.48-10-10-10z"/><path d="M14 28h20v6H14z"/><path d="M14 24h20v4H14z"/><path d="M20 34h8v10h-8z"/></svg>
+      </div>
+      <div class="icon-label">Buy on Pump.fun</div>
     </div>
 
-    <script>
-        const GNOME_COMPONENTS = {
-            HATS: [
-                { art: `  _===_  \n / ___ \\ `, rarity: 0.8 },
-                { art: `  .---.  \n /  o  \\ `, rarity: 0.6 },
-                { art: `   ___  \n /(•••)\\`, rarity: 0.4 },
-                { art: `  /###\\ \n /  █  \\`, rarity: 0.2 }
-            ],
-            FACES: [
-                { art: ` ( o o ) \n (  "  ) `, rarity: 0.7 },
-                { art: ` ( • • ) \n (  -  ) `, rarity: 0.5 },
-                { art: ` ( ◕ ◕ ) \n (  ~  ) `, rarity: 0.3 },
-                { art: ` ( ⚇ ⚇ ) \n (  °  ) `, rarity: 0.1 }
-            ],
-            BODIES: [
-                { art: `  /|\\   \n  / \\  `, rarity: 0.9 },
-                { art: `  /█\\   \n  / \\  `, rarity: 0.7 },
-                { art: `  /O\\   \n  / \\  `, rarity: 0.5 },
-                { art: `  /#\\   \n  / \\  `, rarity: 0.3 }
-            ],
-            FEET: [
-                { art: ` (=====) `, rarity: 0.8 },
-                { art: ` {-----} `, rarity: 0.6 },
-                { art: ` [|||||] `, rarity: 0.4 },
-                { art: ` (•••) `, rarity: 0.2 }
-            ]
+    <div class="desktop-icon" style="top: 150px; left: 120px;" ondblclick="openStoreWindow()">
+      <div class="icon-image">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#000" stroke-width="2"><path d="M6 18h36v22H6z" fill="#A0522D"/><path d="M3 12h42v6H3z"/><path d="M12 18v-8m24 8v-8m-12 28V18" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="icon-label">General Store</div>
+    </div>
+
+    <div class="desktop-icon" style="top: 150px; left: 220px;" ondblclick="openDiaryWindow()">
+      <div class="icon-image">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none"><path d="M8 6h32v36H8z" fill="#D2B48C" stroke="#000" stroke-width="2"/><path d="M14 6v36" fill="none" stroke="#000" stroke-width="2"/><path d="M20 14h14m-14 8h14m-14 8h8" stroke="#000" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+      <div class="icon-label">Gnome's Diary</div>
+    </div>
+
+    <div class="desktop-icon" style="top: 250px; left: 20px;" ondblclick="openLeaderboardWindow()">
+      <div class="icon-image">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#000" stroke-width="2"><path d="M14 24h20v20H14z" fill="#FFD700"/><path d="M10 32h8v12H10z" fill="#C0C0C0"/><path d="M30 28h8v16H30z" fill="#CD7F32"/><path d="M24 16l3 6h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z" fill="#FFD700" stroke="none"/></svg>
+      </div>
+      <div class="icon-label">Leaderboards</div>
+    </div>
+
+    <div class="desktop-icon" style="top: 250px; left: 120px;" ondblclick="openTradingWindow()">
+      <div class="icon-image">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#000" stroke-width="2"><path d="M8 8h32v32H8z" fill="#001122"/><path d="M12 28l6-6 4 4 6-8 6 6" stroke="#00FF41" stroke-width="3" fill="none"/><path d="M14 14h4v8h-4z" fill="#FF4444"/><path d="M20 18h4v4h-4z" fill="#00FF41"/><path d="M26 12h4v10h-4z" fill="#FF4444"/><path d="M32 16h4v6h-4z" fill="#00FF41"/></svg>
+      </div>
+      <div class="icon-label">GnomeDEX</div>
+    </div>
+
+    <div class="desktop-icon" style="top: 250px; left: 220px;" ondblclick="openMemeWindow()">
+      <div class="icon-image">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#000" stroke-width="2"><path d="M8 8h32v32H8z" fill="#FFE4B5"/><path d="M16 16h16v16H16z" fill="#FFF" stroke="#000"/><path d="M12 12h4v4h-4z" fill="#FF69B4"/><path d="M32 12h4v4h-4z" fill="#00CED1"/><path d="M12 32h4v4h-4z" fill="#32CD32"/><path d="M32 32h4v4h-4z" fill="#FFD700"/><circle cx="20" cy="20" r="2" fill="#000"/><circle cx="28" cy="20" r="2" fill="#000"/><path d="M20 26c2 2 6 2 8 0" stroke="#000" fill="none"/></svg>
+      </div>
+      <div class="icon-label">Meme Studio</div>
+    </div>
+
+    <div class="desktop-icon" style="top: 250px; left: 320px;" ondblclick="openGnomeTubeWindow()">
+      <div class="icon-image">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#000" stroke-width="2"><path d="M8 8h32v32H8z" fill="#FF0000"/><path d="M18 16l12 8-12 8V16z" fill="#FFF"/><path d="M12 12h24v4H12z" fill="#FFF" opacity="0.8"/><path d="M12 32h24v4H12z" fill="#FFF" opacity="0.8"/><circle cx="14" cy="14" r="1" fill="#FF0000"/><circle cx="34" cy="14" r="1" fill="#FF0000"/></svg>
+      </div>
+      <div class="icon-label">GnomeTube</div>
+    </div>
+
+    <!-- Main Window -->
+    <div class="window" id="mainWindow">
+      <div class="window-header active" onmousedown="startDrag(event, 'mainWindow')">
+        <div class="window-controls">
+          <div class="window-button close-button" onclick="closeWindow('mainWindow')"></div>
+        </div>
+        <div class="window-title">Gnomeria Mining Co.</div>
+        <div class="window-controls" style="width: 16px;"></div>
+      </div>
+      <div class="window-content">
+        <div style="text-align: center; margin-bottom: 12px;">
+          <div style="font-size: 32px; margin-bottom: 4px;">⛏️</div>
+          <strong>Welcome to the Mines of Gnomeria</strong><br>
+          <small>One unique Gnome Miner per wallet!</small>
+        </div>
+        
+        <div class="input-group">
+          <label for="walletInput">Enter Your Wallet Address:</label>
+          <input type="text" id="walletInput" class="text-input" placeholder="Solana or EVM (0x) wallet address">
+        </div>
+        
+        <div style="text-align: center; margin: 12px 0;">
+          <button class="button primary" id="generateBtn" onclick="generateGnome()">
+            Summon Gnome
+          </button>
+        </div>
+        
+        <div class="progress-container">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+        
+        <div class="status-text" id="statusText">Ready to summon your Gnome Miner...</div>
+        
+        <div class="gnome-container" id="gnomeContainer">
+          <div class="gnome-viewer" id="gnomeViewer" onclick="workGnome()">
+            <canvas id="gnomeCanvas"></canvas>
+          </div>
+          
+          <div class="morale-indicator">
+            <span class="morale-icon" id="moraleIcon">😊</span>
+            <div class="morale-bar">
+              <div class="morale-fill" id="moraleFill" style="width: 80%"></div>
+            </div>
+            <span style="font-size: 14px;">Morale</span>
+          </div>
+          
+          <div id="rockChipsDisplay" style="text-align: center; font-weight: bold; margin: 4px 0; color: #000;">Rock Chips: 0</div>
+
+          <div class="gnome-info" id="gnomeInfo"></div>
+          
+          <div class="action-buttons">
+            <!-- Morale buttons removed, will be in store -->
+          </div>
+          
+          <div class="share-buttons">
+            <button class="button" onclick="shareGnome()">Share on X</button>
+            <button class="button" onclick="saveGnomeImage()">Save Mugshot</button>
+            <button class="button" onclick="copyGnomeData()">Copy Data</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Gallery Window -->
+    <div class="window" id="galleryWindow" style="width: 400px; height: 320px; top: 100px; left: 150px;">
+      <div class="window-header" onmousedown="startDrag(event, 'galleryWindow')">
+        <div class="window-controls">
+          <div class="window-button close-button" onclick="closeWindow('galleryWindow')"></div>
+        </div>
+        <div class="window-title">The Barracks</div>
+        <div class="window-controls" style="width: 16px;"></div>
+      </div>
+      <div class="window-content">
+        <div id="galleryContent" class="gallery-grid"></div>
+      </div>
+    </div>
+    
+    <!-- Help Window -->
+    <div class="window" id="helpWindow" style="width: 400px; top: 80px; left: 200px;">
+      <div class="window-header" onmousedown="startDrag(event, 'helpWindow')">
+        <div class="window-controls">
+          <div class="window-button close-button" onclick="closeWindow('helpWindow')"></div>
+        </div>
+        <div class="window-title">Gnomepedia</div>
+        <div class="window-controls" style="width: 16px;"></div>
+      </div>
+      <div class="window-content">
+        <h3>Welcome to the Mines of Gnomeria!</h3>
+        <p><strong>What are Gnome Miners?</strong><br>
+        Hard-working digital gnomes who mine for glory and $GNOME tokens. Each wallet gets one unique gnome!</p>
+        
+        <p><strong>How to Summon:</strong><br>
+        1. Enter your wallet address<br>
+        2. Click "Summon Gnome"<br>
+        3. Your unique miner will be generated!<br>
+        4. Keep their morale high to mine efficiently!</p>
+        
+        <p><strong>Gnome Ranks:</strong><br>
+        • Apprentice Digger (Common)<br>
+        • Stone Mason (Uncommon)<br>
+        • Crystal Scout (Rare)<br>
+        • Master Gemcutter (Epic)<br>
+        • Deep Delver (Legendary)<br>
+        • Eldrich Geologist (Mythic)</p>
+        
+        <p><strong>$GNOME Token:</strong><br>
+        The official currency of Gnomeria. To the center of the earth! 🚀</p>
+      </div>
+    </div>
+    
+    <!-- Store Window -->
+    <div class="window" id="storeWindow" style="width: 320px; top: 120px; left: 400px;">
+      <div class="window-header" onmousedown="startDrag(event, 'storeWindow')">
+        <div class="window-controls">
+          <div class="window-button close-button" onclick="closeWindow('storeWindow')"></div>
+        </div>
+        <div class="window-title">General Store</div>
+        <div class="window-controls" style="width: 16px;"></div>
+      </div>
+      <div class="window-content" id="storeContent">
+        <p style="text-align: center;">Welcome! Spend your Rock Chips here.</p>
+        <!-- Store items will be loaded here by JS -->
+      </div>
+    </div>
+
+    <!-- Diary Window -->
+    <div class="window" id="diaryWindow" style="width: 350px; height: 400px; top: 150px; left: 450px;">
+      <div class="window-header" onmousedown="startDrag(event, 'diaryWindow')">
+        <div class="window-controls">
+          <div class="window-button close-button" onclick="closeWindow('diaryWindow')"></div>
+        </div>
+        <div class="window-title">Gnome's Diary</div>
+        <div class="window-controls" style="width: 16px;"></div>
+      </div>
+      <div class="window-content" id="diaryContent" style="background: #EFE8D8; color: #3B3121; font-family: 'Georgia', serif; font-size: 15px; line-height: 1.5;">
+        <p>A quiet place for a gnome's thoughts...</p>
+        <!-- Diary entries will be loaded here by JS -->
+      </div>
+    </div>
+
+    <!-- Leaderboards Window -->
+    <div class="window" id="leaderboardWindow" style="width: 480px; height: 450px; top: 80px; left: 300px;">
+      <div class="window-header" onmousedown="startDrag(event, 'leaderboardWindow')">
+        <div class="window-controls">
+          <div class="window-button close-button" onclick="closeWindow('leaderboardWindow')"></div>
+        </div>
+        <div class="window-title">🏆 Mining Leaderboards</div>
+        <div class="window-controls" style="width: 16px;"></div>
+      </div>
+      <div class="window-content" id="leaderboardContent">
+        <div style="margin-bottom: 12px;">
+          <strong>Top Miners of Gnomeria</strong>
+          <div style="display: flex; gap: 8px; margin-top: 8px;">
+            <button class="button" onclick="showLeaderboard('earnings')" id="earningsTab">💰 Top Earners</button>
+            <button class="button" onclick="showLeaderboard('productive')" id="productiveTab">⚡ Most Active</button>
+          </div>
+        </div>
+        <div id="leaderboardData" style="max-height: 300px; overflow-y: auto;">
+          <!-- Leaderboard content will be loaded here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- GnomeDEX Trading Window -->
+    <div class="window" id="tradingWindow" style="width: 600px; height: 500px; top: 60px; left: 200px;">
+      <div class="window-header" onmousedown="startDrag(event, 'tradingWindow')">
+        <div class="window-controls">
+          <div class="window-button close-button" onclick="closeWindow('tradingWindow')"></div>
+        </div>
+        <div class="window-title">📈 GnomeDEX - Decentralized Mining Exchange</div>
+        <div class="window-controls" style="width: 16px;"></div>
+      </div>
+      <div class="window-content" id="tradingContent" style="padding: 8px;">
+        <!-- Trading Interface -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; height: 100%;">
+          <!-- Left Panel: Market & Chart -->
+          <div>
+            <div style="background: #1a1a1a; color: #00ff41; padding: 8px; border: 2px solid #333; margin-bottom: 8px; font-family: monospace;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <select id="tradingPair" onchange="switchTradingPair()" style="background: #333; color: #00ff41; border: 1px solid #555; padding: 2px;">
+                  <option value="BEARD">BEARD/CHIPS</option>
+                  <option value="PICKAXE">PICKAXE/CHIPS</option>
+                  <option value="CAVE">CAVE/CHIPS</option>
+                  <option value="GEM">GEM/CHIPS</option>
+                </select>
+                <div id="currentPrice" style="font-weight: bold;">$0.00</div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                <span id="priceChange">+0.00%</span>
+                <span>24h Vol: <span id="volume">0</span></span>
+              </div>
+            </div>
+            
+            <!-- Simple Chart Area -->
+            <div style="background: #0a0a0a; border: 2px solid #333; height: 200px; position: relative; margin-bottom: 8px;">
+              <canvas id="tradingChart" width="280" height="196" style="display: block;"></canvas>
+            </div>
+            
+            <!-- Market Data -->
+            <div style="background: #f0f0f0; border: 2px inset #808080; padding: 4px; font-size: 12px;">
+              <div style="font-weight: bold; margin-bottom: 4px;">Market Data</div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                <div>24h High: <span id="high24h">$0.00</span></div>
+                <div>24h Low: <span id="low24h">$0.00</span></div>
+                <div>Market Cap: <span id="marketCap">$0</span></div>
+                <div>Supply: <span id="supply">1,000,000</span></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Right Panel: Trading & Portfolio -->
+          <div>
+            <!-- Portfolio -->
+            <div style="background: #f0f0f0; border: 2px inset #808080; padding: 8px; margin-bottom: 8px;">
+              <div style="font-weight: bold; margin-bottom: 4px;">Portfolio</div>
+              <div style="font-size: 12px;">
+                <div>Rock Chips: <span id="portfolioChips">0</span></div>
+                <div id="portfolioTokens"></div>
+                <div style="margin-top: 4px; padding-top: 4px; border-top: 1px solid #ccc;">
+                  Total Value: <span id="portfolioValue" style="font-weight: bold;">0 Chips</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Trading Panel -->
+            <div style="background: #f0f0f0; border: 2px inset #808080; padding: 8px; margin-bottom: 8px;">
+              <div style="display: flex; gap: 4px; margin-bottom: 8px;">
+                <button class="button" onclick="setTradeType('buy')" id="buyBtn" style="background: #4CAF50; color: white;">BUY</button>
+                <button class="button" onclick="setTradeType('sell')" id="sellBtn">SELL</button>
+              </div>
+              <div style="margin-bottom: 4px;">
+                <label style="font-size: 12px;">Amount:</label>
+                <input type="number" id="tradeAmount" class="text-input" style="width: 100%; font-size: 12px;" placeholder="0.00">
+              </div>
+              <div style="margin-bottom: 8px;">
+                <label style="font-size: 12px;">Price per token:</label>
+                <input type="number" id="tradePrice" class="text-input" style="width: 100%; font-size: 12px;" placeholder="Market Price">
+              </div>
+              <button class="button" onclick="executeTrade()" style="width: 100%;" id="executeTradeBtn">BUY BEARD</button>
+            </div>
+            
+            <!-- Recent Trades -->
+            <div style="background: #f0f0f0; border: 2px inset #808080; padding: 8px; max-height: 120px; overflow-y: auto;">
+              <div style="font-weight: bold; margin-bottom: 4px; font-size: 12px;">Recent Trades</div>
+              <div id="recentTrades" style="font-size: 10px; font-family: monospace;">
+                <!-- Recent trades will be populated here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Meme Studio Window -->
+    <div class="window" id="memeWindow" style="width: 550px; height: 480px; top: 70px; left: 250px;">
+      <div class="window-header" onmousedown="startDrag(event, 'memeWindow')">
+        <div class="window-controls">
+          <div class="window-button close-button" onclick="closeWindow('memeWindow')"></div>
+        </div>
+        <div class="window-title">😂 Gnome Meme Studio</div>
+        <div class="window-controls" style="width: 16px;"></div>
+      </div>
+      <div class="window-content" id="memeContent" style="padding: 8px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; height: 100%;">
+          <!-- Left Panel: Templates & Controls -->
+          <div>
+            <div style="margin-bottom: 12px;">
+              <label style="font-weight: bold; display: block; margin-bottom: 4px;">Choose Template:</label>
+              <select id="memeTemplate" onchange="changeMemeTemplate()" style="width: 100%; padding: 4px; font-family: 'VT323', monospace;">
+                <option value="stonks">📈 Stonks</option>
+                <option value="drake">👉 Drake Pointing</option>
+                <option value="distracted">👀 Distracted Boyfriend</option>
+                <option value="thisisfine">🔥 This is Fine</option>
+                <option value="galaxy_brain">🧠 Galaxy Brain</option>
+                <option value="gnome_hodl">⛏️ Gnome HODL</option>
+                <option value="gnome_dip">📉 Buy the Dip</option>
+                <option value="gnome_moon">🚀 To the Moon</option>
+              </select>
+            </div>
+            
+            <div style="margin-bottom: 12px;">
+              <label style="font-weight: bold; display: block; margin-bottom: 4px;">Top Text:</label>
+              <input type="text" id="memeTopText" class="text-input" placeholder="Enter top text..." onkeyup="updateMemePreview()">
+            </div>
+            
+            <div style="margin-bottom: 12px;">
+              <label style="font-weight: bold; display: block; margin-bottom: 4px;">Bottom Text:</label>
+              <input type="text" id="memeBottomText" class="text-input" placeholder="Enter bottom text..." onkeyup="updateMemePreview()">
+            </div>
+            
+            <div style="margin-bottom: 12px;">
+              <label style="font-weight: bold; display: block; margin-bottom: 4px;">Include Your Gnome:</label>
+              <input type="checkbox" id="includeGnome" onchange="updateMemePreview()"> 
+              <span style="font-size: 14px;">Add your gnome to the meme</span>
+            </div>
+            
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button class="button" onclick="generateRandomMeme()">🎲 Random</button>
+              <button class="button" onclick="saveMeme()">💾 Save</button>
+              <button class="button" onclick="shareMeme()">📤 Share</button>
+              <button class="button" onclick="copyMemeText()">📋 Copy Text</button>
+            </div>
+          </div>
+          
+          <!-- Right Panel: Preview -->
+          <div>
+            <div style="background: #f0f0f0; border: 2px inset #808080; padding: 8px; height: 100%;">
+              <div style="font-weight: bold; margin-bottom: 8px; text-align: center;">Preview</div>
+              <div id="memePreview" style="background: #fff; border: 2px solid #000; height: 300px; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                <canvas id="memeCanvas" width="280" height="280" style="max-width: 100%; max-height: 100%;"></canvas>
+              </div>
+              <div style="margin-top: 8px; font-size: 12px; text-align: center; color: #666;">
+                <div id="memeStats">Template: Stonks | Characters: 0/50</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- GnomeTube Window -->
+    <div class="window" id="gnomeTubeWindow" style="width: 700px; height: 520px; top: 50px; left: 150px;">
+      <div class="window-header" onmousedown="startDrag(event, 'gnomeTubeWindow')">
+        <div class="window-controls">
+          <div class="window-button close-button" onclick="closeWindow('gnomeTubeWindow')"></div>
+        </div>
+        <div class="window-title">📺 GnomeTube - Underground Video Network</div>
+        <div class="window-controls" style="width: 16px;"></div>
+      </div>
+      <div class="window-content" id="gnomeTubeContent" style="padding: 8px;">
+        <!-- Top Navigation -->
+        <div style="display: flex; gap: 8px; margin-bottom: 8px; align-items: center;">
+          <input type="text" id="gnomeTubeSearch" class="text-input" placeholder="Search GnomeTube..." style="flex: 1; font-size: 12px;">
+          <button class="button" onclick="searchGnomeTube()">🔍</button>
+          <select id="gnomeTubeCategory" onchange="filterByCategory()" style="padding: 4px; font-family: 'VT323', monospace;">
+            <option value="all">All Categories</option>
+            <option value="mining">⛏️ Mining Tutorials</option>
+            <option value="crypto">💰 Crypto News</option>
+            <option value="memes">😂 Meme Reviews</option>
+            <option value="music">🎵 Gnome Songs</option>
+            <option value="live">🔴 Live Streams</option>
+          </select>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 12px; height: calc(100% - 40px);">
+          <!-- Main Video Player -->
+          <div>
+            <div style="background: #000; border: 2px solid #333; height: 250px; position: relative; margin-bottom: 8px;">
+              <div id="videoPlayer" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px;">
+                <div style="text-align: center;">
+                  <div style="font-size: 48px; margin-bottom: 8px;">▶️</div>
+                  <div id="currentVideoTitle">Select a video to watch</div>
+                </div>
+              </div>
+              <!-- Video Controls -->
+              <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.8); color: white; padding: 4px; display: none;" id="videoControls">
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 12px;">
+                  <button onclick="togglePlay()" style="background: none; border: none; color: white; cursor: pointer;">⏸️</button>
+                  <div style="flex: 1; background: #333; height: 4px; position: relative;">
+                    <div id="progressBar" style="background: #ff0000; height: 100%; width: 0%;"></div>
+                  </div>
+                  <span id="videoTime">0:00 / 0:00</span>
+                  <button onclick="toggleMute()" style="background: none; border: none; color: white; cursor: pointer;">🔊</button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Video Info -->
+            <div style="background: #f0f0f0; border: 2px inset #808080; padding: 8px;">
+              <div id="videoInfo">
+                <div style="font-weight: bold; margin-bottom: 4px;" id="videoTitle">Welcome to GnomeTube!</div>
+                <div style="font-size: 12px; color: #666; margin-bottom: 4px;">
+                  <span id="videoViews">0 views</span> • <span id="videoDate">Today</span> • by <span id="videoChannel">GnomeTube</span>
+                </div>
+                <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                  <button class="button" onclick="likeVideo()" id="likeBtn">👍 <span id="likeCount">0</span></button>
+                  <button class="button" onclick="dislikeVideo()" id="dislikeBtn">👎 <span id="dislikeCount">0</span></button>
+                  <button class="button" onclick="subscribeChannel()">🔔 Subscribe</button>
+                  <button class="button" onclick="shareVideo()">📤 Share</button>
+                </div>
+                <div style="font-size: 12px;" id="videoDescription">
+                  Select a video from the sidebar to start watching!
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Sidebar: Video List -->
+          <div>
+            <div style="background: #f0f0f0; border: 2px inset #808080; padding: 8px; height: 100%; overflow-y: auto;">
+              <div style="font-weight: bold; margin-bottom: 8px; font-size: 14px;">📈 Trending Now</div>
+              <div id="videoList">
+                <!-- Videos will be populated here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Alert Dialog -->
+    <div class="alert" id="alertDialog">
+      <div style="margin-bottom: 12px;" id="alertText">Alert Message</div>
+      <button class="button" onclick="closeAlert()">OK</button>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    // --- GLOBAL STATE ---
+    let currentGnomeData = null;
+    const gnomeRegistry = JSON.parse(localStorage.getItem('gnomeRegistry') || '{}');
+    let currentMorale = 80;
+    let lastInteractionTime = Date.now();
+    let currentEvent = null;
+    
+    // Three.js variables
+    let scene, camera, renderer, gnomeModel;
+    let isAnimating = false;
+    
+    // Window management
+    let activeWindow = null;
+    let isDragging = false;
+    let dragOffset = { x: 0, y: 0 };
+
+    // Gnome attributes
+    const gnomeAttributes = {
+      ranks: [
+        { name: 'Apprentice Digger', chance: 0.40, color: '#95a5a6' },
+        { name: 'Stone Mason', chance: 0.25, color: '#3498db' },
+        { name: 'Crystal Scout', chance: 0.20, color: '#9b59b6' },
+        { name: 'Master Gemcutter', chance: 0.10, color: '#e67e22' },
+        { name: 'Deep Delver', chance: 0.045, color: '#e74c3c' },
+        { name: 'Eldrich Geologist', chance: 0.005, color: 'rainbow' }
+      ],
+      beardStyles: ['Short', 'Long', 'Braided', 'Forked', 'Bushy', 'Goatee'],
+      hatColors: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#A020F0', '#FF4500'],
+      miningTools: ['Pickaxe', 'Shovel', 'Lantern', 'Magnifying Glass', 'Canary Cage', 'Geode Hammer'],
+      personalities: ['Grumpy', 'Jolly', 'Hard-working', 'Sneezy', 'Sleepy', 'Clever', 'Dopey', 'Gassy']
+    };
+    
+    const gnomishEvents = [
+        { type: 'gem_rush', name: '💎 Gem Rush!', duration: 5 * 60 * 1000, chance: 0.1, description: 'All Rock Chip earnings are doubled for 5 minutes!' },
+        { type: 'good_fortune', name: '🍀 Good Fortune!', duration: 0, chance: 0.05, description: 'A lost satchel of 25 Rock Chips has been found!' },
+        { type: 'bard_visit', name: '🎵 Bard Visit!', duration: 10 * 60 * 1000, chance: 0.1, description: 'A traveling bard lifts everyone\'s spirits! Morale decay is paused for 10 minutes.' }
+    ];
+    
+    // --- INITIALIZATION ---
+    window.onload = function() {
+      updateClock();
+      setInterval(updateClock, 1000);
+      initializeThreeJS();
+      updateMoraleOverTime();
+      setInterval(checkForRandomEvent, 60000); // Check for events every minute
+      
+      console.log('Gnome Miners Ready! ⛏️');
+      console.log('$GNOME to the moon! 🚀');
+      
+      // Auto-open the main Gnome Miners app
+      showWindow('mainWindow');
+    };
+    
+    // --- UI FUNCTIONS ---
+    function updateClock() {
+      const now = new Date();
+      const time = now.toLocaleTimeString('en-US', { 
+        hour: 'numeric', 
+        minute: '2-digit',
+        hour12: true 
+      });
+      document.getElementById('clock').textContent = time;
+    }
+    
+    function showAlert(message) {
+      document.getElementById('alertText').innerHTML = message.replace(/\\n/g, '<br>');
+      document.getElementById('alertDialog').classList.add('show');
+    }
+    
+    function closeAlert() {
+      document.getElementById('alertDialog').classList.remove('show');
+    }
+    
+    // --- WINDOW MANAGEMENT ---
+    function openMainWindow() { showWindow('mainWindow'); }
+    function openGalleryWindow() { showWindow('galleryWindow'); loadGallery(); }
+    function openHelpWindow() { showWindow('helpWindow'); }
+    function openStoreWindow() { showWindow('storeWindow'); loadStore(); }
+    function openDiaryWindow() { showWindow('diaryWindow'); loadDiary(); }
+    function openLeaderboardWindow() { showWindow('leaderboardWindow'); loadLeaderboards(); }
+    function openTradingWindow() { showWindow('tradingWindow'); loadTrading(); }
+    function openMemeWindow() { showWindow('memeWindow'); loadMemeStudio(); }
+    function openGnomeTubeWindow() { showWindow('gnomeTubeWindow'); loadGnomeTube(); }
+    
+    function showWindow(windowId) {
+      const win = document.getElementById(windowId);
+      if (win) {
+        document.querySelectorAll('.window').forEach(w => {
+          w.classList.remove('active');
+          w.querySelector('.window-header').classList.remove('active');
+        });
+        
+        win.classList.add('active');
+        win.querySelector('.window-header').classList.add('active');
+        win.style.zIndex = getNextZIndex();
+        activeWindow = win;
+      }
+    }
+    
+    function closeWindow(windowId) {
+      const win = document.getElementById(windowId);
+      if (win) win.classList.remove('active');
+    }
+
+    function getNextZIndex() {
+      const windows = document.querySelectorAll('.window');
+      let maxZ = 1000;
+      windows.forEach(w => {
+        const z = parseInt(w.style.zIndex || 1000);
+        if (z > maxZ) maxZ = z;
+      });
+      return maxZ + 1;
+    }
+    
+    // --- DRAG FUNCTIONALITY ---
+    function startDrag(e, windowId) {
+      const win = document.getElementById(windowId);
+      isDragging = true;
+      dragOffset = { x: e.clientX - win.offsetLeft, y: e.clientY - win.offsetTop };
+      win.style.zIndex = getNextZIndex();
+      
+      document.onmousemove = (e) => {
+        if (isDragging) {
+          win.style.left = (e.clientX - dragOffset.x) + 'px';
+          win.style.top = (e.clientY - dragOffset.y) + 'px';
+        }
+      };
+      document.onmouseup = () => { isDragging = false; document.onmousemove = null; document.onmouseup = null; };
+    }
+    
+    // --- THREE.JS SETUP ---
+    function initializeThreeJS() {
+      const canvas = document.getElementById('gnomeCanvas');
+      const container = document.getElementById('gnomeViewer');
+      if (!container || container.clientWidth === 0) { setTimeout(initializeThreeJS, 100); return; }
+      
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x4A4A52);
+      
+      camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
+      camera.position.set(0, 2, 6);
+      camera.lookAt(0, 1, 0);
+      
+      renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: false, alpha: true });
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+      scene.add(ambientLight);
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+      directionalLight.position.set(5, 10, 7);
+      scene.add(directionalLight);
+
+      window.addEventListener('resize', () => {
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
+      });
+      animate();
+    }
+    
+    function animate() {
+      requestAnimationFrame(animate);
+      if (gnomeModel && isAnimating) {
+        const time = Date.now() * 0.001;
+        gnomeModel.rotation.y = Math.sin(time * 0.5) * 0.2;
+        gnomeModel.position.y = Math.sin(time * 2) * 0.1;
+      }
+      renderer.render(scene, camera);
+    }
+    
+    // --- GNOME GENERATION ---
+    async function generateGnome() {
+      const input = document.getElementById('walletInput').value.trim();
+      
+      const evmRegex = /^0x[a-f0-9]{40}$/i;
+      const solanaRegex = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+
+      if (!evmRegex.test(input) && !solanaRegex.test(input)) {
+        showAlert('That is not a valid wallet address.\nPlease enter a valid Solana or EVM (0x) address.');
+        return;
+      }
+
+      const normalizedInput = input.toLowerCase();
+      
+      if (gnomeRegistry[normalizedInput]) {
+        displayGnome(gnomeRegistry[normalizedInput]);
+        showAlert('Your Gnome Miner has been retrieved!');
+        return;
+      }
+      
+      document.getElementById('generateBtn').disabled = true;
+      document.getElementById('walletInput').disabled = true;
+      
+      const steps = [
+        { progress: 10, text: 'Consulting the ancient runes...' },
+        { progress: 25, text: 'Listening for echoes in the deep...' },
+        { progress: 40, text: 'Carving a summoning circle...' },
+        { progress: 55, text: 'Chiseling physical form...' },
+        { progress: 70, text: 'Bestowing a mighty beard...' },
+        { progress: 85, text: 'Emerging from the stone...' },
+        { progress: 100, text: 'Your Gnome Miner is ready!' }
+      ];
+      
+      for (const step of steps) {
+        await updateProgress(step.progress, step.text);
+        await sleep(400);
+      }
+      
+      const gnomeData = generateGnomeData(normalizedInput);
+      gnomeRegistry[normalizedInput] = gnomeData;
+      localStorage.setItem('gnomeRegistry', JSON.stringify(gnomeRegistry));
+      currentGnomeData = gnomeData;
+      displayGnome(gnomeData);
+      
+      document.getElementById('generateBtn').disabled = false;
+      document.getElementById('walletInput').disabled = false;
+    }
+    
+    function generateGnomeData(input) {
+      const seed = hashCode(input);
+      const rng = mulberry32(seed);
+      
+      const rankRoll = rng();
+      let rank = gnomeAttributes.ranks[0];
+      let cumulative = 0;
+      for (const r of gnomeAttributes.ranks) {
+        cumulative += r.chance;
+        if (rankRoll < cumulative) { rank = r; break; }
+      }
+      
+      const namePrefix = ['Glim', 'Borin', 'Durin', 'Fiz', 'Nog', 'Zook', 'Gruk'];
+      const nameSuffix = ['beard', 'pick', 'nugget', 'hammer', 'stone', 'gem', 'dust'];
+      const name = namePrefix[Math.floor(rng() * namePrefix.length)] + nameSuffix[Math.floor(rng() * nameSuffix.length)];
+      
+      return {
+        id: input,
+        name: name,
+        rank: rank,
+        beardStyle: gnomeAttributes.beardStyles[Math.floor(rng() * gnomeAttributes.beardStyles.length)],
+        hatColor: gnomeAttributes.hatColors[Math.floor(rng() * gnomeAttributes.hatColors.length)],
+        miningTool: gnomeAttributes.miningTools[Math.floor(rng() * gnomeAttributes.miningTools.length)],
+        personality: gnomeAttributes.personalities[Math.floor(rng() * gnomeAttributes.personalities.length)],
+        birthday: new Date().toLocaleDateString(),
+        morale: 80,
+        modelType: Math.floor(rng() * 3),
+        rockChips: 0,
+        diaryEntries: [],
+        activeRequest: null
+      };
+    }
+    
+    function displayGnome(gnomeData) {
+      currentGnomeData = gnomeData;
+      document.getElementById('gnomeContainer').style.display = 'block';
+      
+      const infoHtml = `
+        <div class="gnome-name">${gnomeData.name}</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 14px;">
+          <div><strong>Rank:</strong> <span class="rank-${gnomeData.rank.name.toLowerCase().replace(/ /g, '-')}">${gnomeData.rank.name}</span></div>
+          <div><strong>Beard:</strong> ${gnomeData.beardStyle}</div>
+          <div><strong>Hat:</strong> <span style="color: ${gnomeData.hatColor}">■</span> ${gnomeData.hatColor}</div>
+          <div><strong>Tool:</strong> ${gnomeData.miningTool}</div>
+          <div><strong>Trait:</strong> ${gnomeData.personality}</div>
+          <div><strong>Summoned:</strong> ${gnomeData.birthday}</div>
+        </div>
+      `;
+      document.getElementById('gnomeInfo').innerHTML = infoHtml;
+      document.getElementById('rockChipsDisplay').textContent = `Rock Chips: ${gnomeData.rockChips || 0}`;
+      
+      if (!renderer) initializeThreeJS();
+      setTimeout(() => create3DGnome(gnomeData), 100);
+      
+      currentMorale = gnomeData.morale || 80;
+      updateMoraleDisplay();
+    }
+    
+    function create3DGnome(gnomeData) {
+      if (gnomeModel) scene.remove(gnomeModel);
+      gnomeModel = new THREE.Group();
+      
+      const hatColor = parseInt(gnomeData.hatColor.replace('#', ''), 16);
+      const skinTone = 0xFFDAB9; // PeachPuff
+      const beardColor = 0xD2B48C; // Tan
+
+      // Shared Materials
+      const bodyMat = new THREE.MeshPhongMaterial({ color: 0x4B3B40, flatShading: true });
+      const headMat = new THREE.MeshPhongMaterial({ color: skinTone, flatShading: true });
+      const hatMat = new THREE.MeshPhongMaterial({ color: hatColor, flatShading: true });
+      const beardMat = new THREE.MeshPhongMaterial({ color: beardColor, flatShading: true });
+      const footMat = new THREE.MeshPhongMaterial({ color: 0x5C4033, flatShading: true });
+      const toolHandleMat = new THREE.MeshPhongMaterial({ color: 0x8B4513, flatShading: true });
+      const toolHeadMat = new THREE.MeshPhongMaterial({ color: 0x708090, flatShading: true });
+
+      const modelType = gnomeData.modelType || 0;
+
+      switch(modelType) {
+        case 0: { // Standard Gnome (Original)
+          const bodyGeo = new THREE.BoxGeometry(1.2, 1.5, 0.8);
+          const body = new THREE.Mesh(bodyGeo, bodyMat);
+          gnomeModel.add(body);
+
+          const headGeo = new THREE.BoxGeometry(0.9, 0.9, 0.9);
+          const head = new THREE.Mesh(headGeo, headMat);
+          head.position.y = 1.2;
+          gnomeModel.add(head);
+          
+          const hatGeo = new THREE.ConeGeometry(0.8, 1.5, 8);
+          const hat = new THREE.Mesh(hatGeo, hatMat);
+          hat.position.y = 2.0;
+          gnomeModel.add(hat);
+          
+          const noseGeo = new THREE.SphereGeometry(0.3, 8, 8);
+          const nose = new THREE.Mesh(noseGeo, headMat);
+          nose.position.set(0, 1.1, 0.4);
+          gnomeModel.add(nose);
+          
+          // Beard based on style
+          const beardGroup = new THREE.Group();
+          switch(gnomeData.beardStyle) {
+            case 'Long':
+              const longBeardGeo = new THREE.ConeGeometry(0.8, 1.8, 4);
+              const longBeard = new THREE.Mesh(longBeardGeo, beardMat);
+              longBeard.position.set(0, 0.2, 0.4);
+              beardGroup.add(longBeard);
+              break;
+            case 'Braided':
+              const braidGeo = new THREE.CylinderGeometry(0.25, 0.25, 1.5, 6);
+              const braid1 = new THREE.Mesh(braidGeo, beardMat);
+              braid1.position.set(-0.25, 0.3, 0.4);
+              beardGroup.add(braid1);
+              const braid2 = new THREE.Mesh(braidGeo, beardMat);
+              braid2.position.set(0.25, 0.3, 0.4);
+              beardGroup.add(braid2);
+              break;
+            case 'Forked':
+              const forkGeo = new THREE.ConeGeometry(0.4, 1.5, 4);
+              const fork1 = new THREE.Mesh(forkGeo, beardMat);
+              fork1.position.set(-0.3, 0.3, 0.4);
+              fork1.rotation.z = -0.2;
+              beardGroup.add(fork1);
+              const fork2 = new THREE.Mesh(forkGeo, beardMat);
+              fork2.position.set(0.3, 0.3, 0.4);
+              fork2.rotation.z = 0.2;
+              beardGroup.add(fork2);
+              break;
+            case 'Bushy':
+              const bushyGeo = new THREE.SphereGeometry(1.0, 8, 6);
+              const bushyBeard = new THREE.Mesh(bushyGeo, beardMat);
+              bushyBeard.position.set(0, 0.1, 0.2);
+              beardGroup.add(bushyBeard);
+              break;
+            case 'Goatee':
+              const goateeGeo = new THREE.ConeGeometry(0.3, 1.0, 4);
+              const goatee = new THREE.Mesh(goateeGeo, beardMat);
+              goatee.position.set(0, 0.2, 0.5);
+              beardGroup.add(goatee);
+              break;
+            default: // Short
+              const beardGeo = new THREE.ConeGeometry(0.8, 1.5, 4); // Wider beard
+              const beard = new THREE.Mesh(beardGeo, beardMat);
+              beard.position.set(0, 0.3, 0.4);
+              beardGroup.add(beard);
+              break;
+          }
+          gnomeModel.add(beardGroup);
+          
+          const footGeo = new THREE.BoxGeometry(0.5, 0.3, 0.7);
+          const leftFoot = new THREE.Mesh(footGeo, footMat);
+          leftFoot.position.set(-0.3, -0.9, 0.2);
+          gnomeModel.add(leftFoot);
+          const rightFoot = new THREE.Mesh(footGeo, footMat);
+          rightFoot.position.set(0.3, -0.9, 0.2);
+          gnomeModel.add(rightFoot);
+
+          // Tool based on type
+          const toolGroup = new THREE.Group();
+          toolGroup.position.set(-0.9, 0.1, 0.6);
+          toolGroup.rotation.z = 0.8;
+          switch(gnomeData.miningTool) {
+            case 'Shovel':
+              const shovelHandleGeo = new THREE.CylinderGeometry(0.05, 0.05, 1.5, 6);
+              const shovelHandle = new THREE.Mesh(shovelHandleGeo, toolHandleMat);
+              toolGroup.add(shovelHandle);
+              const shovelHeadGeo = new THREE.BoxGeometry(0.4, 0.6, 0.1);
+              const shovelHead = new THREE.Mesh(shovelHeadGeo, toolHeadMat);
+              shovelHead.position.y = -0.9;
+              toolGroup.add(shovelHead);
+              break;
+            case 'Lantern':
+              const lanternGeo = new THREE.BoxGeometry(0.4, 0.6, 0.4);
+              const lantern = new THREE.Mesh(lanternGeo, toolHeadMat);
+              toolGroup.add(lantern);
+              const light = new THREE.PointLight(0xFFD700, 0.8, 3);
+              light.position.set(0, 0, 0);
+              lantern.add(light);
+              break;
+            case 'Magnifying Glass':
+              const lensFrameGeo = new THREE.TorusGeometry(0.3, 0.05, 8, 16);
+              const lensFrame = new THREE.Mesh(lensFrameGeo, toolHeadMat);
+              toolGroup.add(lensFrame);
+              const lensHandleGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.5, 6);
+              const lensHandle = new THREE.Mesh(lensHandleGeo, toolHandleMat);
+              lensHandle.position.y = -0.5;
+              toolGroup.add(lensHandle);
+              break;
+            case 'Canary Cage':
+              const cageGeo = new THREE.BoxGeometry(0.5, 0.7, 0.5);
+              const cage = new THREE.Mesh(cageGeo, new THREE.MeshBasicMaterial({ color: 0xFFD700, wireframe: true }));
+              toolGroup.add(cage);
+              break;
+            case 'Geode Hammer':
+              const hammerHandleGeo = new THREE.CylinderGeometry(0.06, 0.06, 1.2, 6);
+              const hammerHandle = new THREE.Mesh(hammerHandleGeo, toolHandleMat);
+              toolGroup.add(hammerHandle);
+              const hammerHeadGeo = new THREE.BoxGeometry(0.5, 0.25, 0.25);
+              const hammerHead = new THREE.Mesh(hammerHeadGeo, toolHeadMat);
+              hammerHead.position.y = 0.6;
+              toolGroup.add(hammerHead);
+              break;
+            default: // Pickaxe
+              const handleGeo = new THREE.CylinderGeometry(0.05, 0.05, 1.5, 6);
+              const handle = new THREE.Mesh(handleGeo, toolHandleMat);
+              toolGroup.add(handle);
+              const pickHeadGeo = new THREE.BoxGeometry(0.6, 0.2, 0.1);
+              const pickHead = new THREE.Mesh(pickHeadGeo, toolHeadMat);
+              pickHead.position.y = 0.75;
+              toolGroup.add(pickHead);
+              break;
+          }
+          gnomeModel.add(toolGroup);
+          break;
+        }
+        case 1: { // Stout Gnome
+          const bodyGeo = new THREE.BoxGeometry(1.5, 1.2, 1.0); // Wider, shorter body
+          const body = new THREE.Mesh(bodyGeo, bodyMat);
+          gnomeModel.add(body);
+
+          const headGeo = new THREE.BoxGeometry(1.0, 1.0, 1.0);
+          const head = new THREE.Mesh(headGeo, headMat);
+          head.position.y = 0.9;
+          gnomeModel.add(head);
+          
+          const hatGeo = new THREE.ConeGeometry(0.9, 1.2, 8);
+          const hat = new THREE.Mesh(hatGeo, hatMat);
+          hat.position.y = 1.8;
+          gnomeModel.add(hat);
+          
+          const noseGeo = new THREE.SphereGeometry(0.35, 8, 8);
+          const nose = new THREE.Mesh(noseGeo, headMat);
+          nose.position.set(0, 0.8, 0.5);
+          gnomeModel.add(nose);
+          
+          // Beard based on style
+          const beardGroup = new THREE.Group();
+          switch(gnomeData.beardStyle) {
+            case 'Long':
+              const longBeardGeo = new THREE.ConeGeometry(0.8, 1.8, 4);
+              const longBeard = new THREE.Mesh(longBeardGeo, beardMat);
+              longBeard.position.set(0, 0.2, 0.4);
+              beardGroup.add(longBeard);
+              break;
+            case 'Braided':
+              const braidGeo = new THREE.CylinderGeometry(0.15, 0.15, 1.8, 6);
+              const braid1 = new THREE.Mesh(braidGeo, beardMat);
+              braid1.position.set(-0.15, 0.9, 0.3);
+              beardGroup.add(braid1);
+              const braid2 = new THREE.Mesh(braidGeo, beardMat);
+              braid2.position.set(0.15, 0.9, 0.3);
+              beardGroup.add(braid2);
+              break;
+            case 'Forked':
+              const forkGeo = new THREE.ConeGeometry(0.2, 1.8, 4);
+              const fork1 = new THREE.Mesh(forkGeo, beardMat);
+              fork1.position.set(-0.15, 0.9, 0.3);
+              fork1.rotation.z = -0.15;
+              beardGroup.add(fork1);
+              const fork2 = new THREE.Mesh(forkGeo, beardMat);
+              fork2.position.set(0.15, 0.9, 0.3);
+              fork2.rotation.z = 0.15;
+              beardGroup.add(fork2);
+              break;
+            case 'Bushy':
+              const bushyGeo = new THREE.SphereGeometry(0.6, 8, 6);
+              const bushyBeard = new THREE.Mesh(bushyGeo, beardMat);
+              bushyBeard.position.set(0, 1.0, 0.1);
+              beardGroup.add(bushyBeard);
+              break;
+            case 'Goatee':
+              const goateeGeo = new THREE.ConeGeometry(0.2, 1.2, 4);
+              const goatee = new THREE.Mesh(goateeGeo, beardMat);
+              goatee.position.set(0, 0.8, 0.4);
+              beardGroup.add(goatee);
+              break;
+            default: // Short
+              const beardGeo = new THREE.ConeGeometry(0.8, 1.5, 4); // Wider beard
+              const beard = new THREE.Mesh(beardGeo, beardMat);
+              beard.position.set(0, 0.3, 0.4);
+              beardGroup.add(beard);
+              break;
+          }
+          gnomeModel.add(beardGroup);
+          
+          const footGeo = new THREE.BoxGeometry(0.5, 0.3, 0.7);
+          const leftFoot = new THREE.Mesh(footGeo, footMat);
+          leftFoot.position.set(-0.4, -0.75, 0.2);
+          gnomeModel.add(leftFoot);
+          const rightFoot = new THREE.Mesh(footGeo, footMat);
+          rightFoot.position.set(0.4, -0.75, 0.2);
+          gnomeModel.add(rightFoot);
+
+          // Tool based on type
+          const toolGroup = new THREE.Group();
+          toolGroup.position.set(-0.9, 0.1, 0.6);
+          toolGroup.rotation.z = 0.8;
+          switch(gnomeData.miningTool) {
+            case 'Shovel':
+              const shovelHandleGeo = new THREE.CylinderGeometry(0.05, 0.05, 1.5, 6);
+              const shovelHandle = new THREE.Mesh(shovelHandleGeo, toolHandleMat);
+              toolGroup.add(shovelHandle);
+              const shovelHeadGeo = new THREE.BoxGeometry(0.4, 0.6, 0.1);
+              const shovelHead = new THREE.Mesh(shovelHeadGeo, toolHeadMat);
+              shovelHead.position.y = -0.9;
+              toolGroup.add(shovelHead);
+              break;
+            case 'Lantern':
+              const lanternGeo = new THREE.BoxGeometry(0.4, 0.6, 0.4);
+              const lantern = new THREE.Mesh(lanternGeo, toolHeadMat);
+              toolGroup.add(lantern);
+              const light = new THREE.PointLight(0xFFD700, 0.8, 3);
+              light.position.set(0, 0, 0);
+              lantern.add(light);
+              break;
+            case 'Magnifying Glass':
+              const lensFrameGeo = new THREE.TorusGeometry(0.3, 0.05, 8, 16);
+              const lensFrame = new THREE.Mesh(lensFrameGeo, toolHeadMat);
+              toolGroup.add(lensFrame);
+              const lensHandleGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.5, 6);
+              const lensHandle = new THREE.Mesh(lensHandleGeo, toolHandleMat);
+              lensHandle.position.y = -0.5;
+              toolGroup.add(lensHandle);
+              break;
+            case 'Canary Cage':
+              const cageGeo = new THREE.BoxGeometry(0.5, 0.7, 0.5);
+              const cage = new THREE.Mesh(cageGeo, new THREE.MeshBasicMaterial({ color: 0xFFD700, wireframe: true }));
+              toolGroup.add(cage);
+              break;
+            case 'Geode Hammer':
+              const hammerHandleGeo = new THREE.CylinderGeometry(0.06, 0.06, 1.2, 6);
+              const hammerHandle = new THREE.Mesh(hammerHandleGeo, toolHandleMat);
+              toolGroup.add(hammerHandle);
+              const hammerHeadGeo = new THREE.BoxGeometry(0.5, 0.25, 0.25);
+              const hammerHead = new THREE.Mesh(hammerHeadGeo, toolHeadMat);
+              hammerHead.position.y = 0.6;
+              toolGroup.add(hammerHead);
+              break;
+            default: // Pickaxe
+              const handleGeo = new THREE.CylinderGeometry(0.05, 0.05, 1.5, 6);
+              const handle = new THREE.Mesh(handleGeo, toolHandleMat);
+              toolGroup.add(handle);
+              const pickHeadGeo = new THREE.BoxGeometry(0.6, 0.2, 0.1);
+              const pickHead = new THREE.Mesh(pickHeadGeo, toolHeadMat);
+              pickHead.position.y = 0.75;
+              toolGroup.add(pickHead);
+              break;
+          }
+          gnomeModel.add(toolGroup);
+          break;
+        }
+        case 2: { // Lanky Gnome
+          const bodyGeo = new THREE.BoxGeometry(1.0, 2.0, 0.7); // Taller, thinner body
+          const body = new THREE.Mesh(bodyGeo, bodyMat);
+          gnomeModel.add(body);
+
+          const headGeo = new THREE.BoxGeometry(0.9, 0.9, 0.9);
+          const head = new THREE.Mesh(headGeo, headMat);
+          head.position.y = 0.9;
+          gnomeModel.add(head);
+          
+          const hatGeo = new THREE.ConeGeometry(0.9, 1.2, 8);
+          const hat = new THREE.Mesh(hatGeo, hatMat);
+          hat.position.y = 1.8;
+          gnomeModel.add(hat);
+          
+          const noseGeo = new THREE.SphereGeometry(0.3, 8, 8);
+          const nose = new THREE.Mesh(noseGeo, headMat);
+          nose.position.set(0, 1.5, 0.4);
+          gnomeModel.add(nose);
+          
+          // Beard based on style
+          const beardGroup = new THREE.Group();
+          switch(gnomeData.beardStyle) {
+            case 'Long':
+              const longBeardGeo = new THREE.ConeGeometry(0.4, 2.2, 4);
+              const longBeard = new THREE.Mesh(longBeardGeo, beardMat);
+              longBeard.position.set(0, 0.8, 0.3);
+              beardGroup.add(longBeard);
+              break;
+            case 'Braided':
+              const braidGeo = new THREE.CylinderGeometry(0.15, 0.15, 1.8, 6);
+              const braid1 = new THREE.Mesh(braidGeo, beardMat);
+              braid1.position.set(-0.15, 0.9, 0.3);
+              beardGroup.add(braid1);
+              const braid2 = new THREE.Mesh(braidGeo, beardMat);
+              braid2.position.set(0.15, 0.9, 0.3);
+              beardGroup.add(braid2);
+              break;
+            case 'Forked':
+              const forkGeo = new THREE.ConeGeometry(0.2, 1.8, 4);
+              const fork1 = new THREE.Mesh(forkGeo, beardMat);
+              fork1.position.set(-0.15, 0.9, 0.3);
+              fork1.rotation.z = -0.15;
+              beardGroup.add(fork1);
+              const fork2 = new THREE.Mesh(forkGeo, beardMat);
+              fork2.position.set(0.15, 0.9, 0.3);
+              fork2.rotation.z = 0.15;
+              beardGroup.add(fork2);
+              break;
+            case 'Bushy':
+              const bushyGeo = new THREE.SphereGeometry(0.6, 8, 6);
+              const bushyBeard = new THREE.Mesh(bushyGeo, beardMat);
+              bushyBeard.position.set(0, 1.0, 0.1);
+              beardGroup.add(bushyBeard);
+              break;
+            case 'Goatee':
+              const goateeGeo = new THREE.ConeGeometry(0.2, 1.2, 4);
+              const goatee = new THREE.Mesh(goateeGeo, beardMat);
+              goatee.position.set(0, 0.8, 0.4);
+              beardGroup.add(goatee);
+              break;
+            default: // Short
+              const beardGeo = new THREE.ConeGeometry(0.4, 1.8, 4); // Longer beard
+              const beard = new THREE.Mesh(beardGeo, beardMat);
+              beard.position.set(0, 0.9, 0.3);
+              beardGroup.add(beard);
+              break;
+          }
+          gnomeModel.add(beardGroup);
+          
+          const footGeo = new THREE.BoxGeometry(0.3, 0.3, 0.6);
+          const leftFoot = new THREE.Mesh(footGeo, footMat);
+          leftFoot.position.set(-0.3, -1.15, 0.2);
+          gnomeModel.add(leftFoot);
+          const rightFoot = new THREE.Mesh(footGeo, footMat);
+          rightFoot.position.set(0.3, -1.15, 0.2);
+          gnomeModel.add(rightFoot);
+
+          // Tool based on type
+          const toolGroup = new THREE.Group();
+          toolGroup.position.set(-0.7, 0.5, 0.5);
+          toolGroup.rotation.z = 0.8;
+          switch(gnomeData.miningTool) {
+            case 'Shovel':
+              const shovelHandleGeo = new THREE.CylinderGeometry(0.05, 0.05, 1.5, 6);
+              const shovelHandle = new THREE.Mesh(shovelHandleGeo, toolHandleMat);
+              toolGroup.add(shovelHandle);
+              const shovelHeadGeo = new THREE.BoxGeometry(0.4, 0.6, 0.1);
+              const shovelHead = new THREE.Mesh(shovelHeadGeo, toolHeadMat);
+              shovelHead.position.y = -0.9;
+              toolGroup.add(shovelHead);
+              break;
+            case 'Lantern':
+              const lanternGeo = new THREE.BoxGeometry(0.4, 0.6, 0.4);
+              const lantern = new THREE.Mesh(lanternGeo, toolHeadMat);
+              toolGroup.add(lantern);
+              const light = new THREE.PointLight(0xFFD700, 0.8, 3);
+              light.position.set(0, 0, 0);
+              lantern.add(light);
+              break;
+            case 'Magnifying Glass':
+              const lensFrameGeo = new THREE.TorusGeometry(0.3, 0.05, 8, 16);
+              const lensFrame = new THREE.Mesh(lensFrameGeo, toolHeadMat);
+              toolGroup.add(lensFrame);
+              const lensHandleGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.5, 6);
+              const lensHandle = new THREE.Mesh(lensHandleGeo, toolHandleMat);
+              lensHandle.position.y = -0.5;
+              toolGroup.add(lensHandle);
+              break;
+            case 'Canary Cage':
+              const cageGeo = new THREE.BoxGeometry(0.5, 0.7, 0.5);
+              const cage = new THREE.Mesh(cageGeo, new THREE.MeshBasicMaterial({ color: 0xFFD700, wireframe: true }));
+              toolGroup.add(cage);
+              break;
+            case 'Geode Hammer':
+              const hammerHandleGeo = new THREE.CylinderGeometry(0.06, 0.06, 1.2, 6);
+              const hammerHandle = new THREE.Mesh(hammerHandleGeo, toolHandleMat);
+              toolGroup.add(hammerHandle);
+              const hammerHeadGeo = new THREE.BoxGeometry(0.5, 0.25, 0.25);
+              const hammerHead = new THREE.Mesh(hammerHeadGeo, toolHeadMat);
+              hammerHead.position.y = 0.6;
+              toolGroup.add(hammerHead);
+              break;
+            default: // Pickaxe
+              const handleGeo = new THREE.CylinderGeometry(0.05, 0.05, 1.5, 6);
+              const handle = new THREE.Mesh(handleGeo, toolHandleMat);
+              toolGroup.add(handle);
+              const pickHeadGeo = new THREE.BoxGeometry(0.6, 0.2, 0.1);
+              const pickHead = new THREE.Mesh(pickHeadGeo, toolHeadMat);
+              pickHead.position.y = 0.75;
+              toolGroup.add(pickHead);
+              break;
+          }
+          gnomeModel.add(toolGroup);
+          break;
+        }
+      }
+      
+      gnomeModel.position.y = 0.2;
+      scene.add(gnomeModel);
+      isAnimating = true;
+      if (renderer && scene && camera) renderer.render(scene, camera);
+    }
+    
+    // --- GNOME INTERACTIONS ---
+    function workGnome() {
+      if (!currentGnomeData) return;
+
+      const workButton = document.getElementById('gnomeViewer');
+      workButton.style.pointerEvents = 'none'; // Disable button temporarily
+
+      let moraleBoost = currentMorale / 100; // 0.0 to 1.0
+      const chipChance = 0.6 + (moraleBoost * 0.35); // Chance to find chips: 60% at 0 morale, up to 95% at 100
+      let chipsFound = Math.floor(Math.random() * 5) + 1;
+
+      if (currentEvent && currentEvent.type === 'gem_rush') {
+        chipsFound *= 2;
+        moraleBoost = 1; // High morale during gem rush!
+      }
+
+      if (Math.random() < chipChance) {
+        currentGnomeData.rockChips += chipsFound;
+        updateGnomeData();
+        showFloatingText(`✨ Found ${chipsFound} Rock Chips!`);
+        document.getElementById('rockChipsDisplay').textContent = `Rock Chips: ${currentGnomeData.rockChips}`;
+      } else {
+        showFloatingText('Nothing but dust this time...');
+      }
+      
+      // Add a diary entry
+      addDiaryEntry('work');
+
+      setTimeout(() => {
+        workButton.style.pointerEvents = 'auto'; // Re-enable after 1.5s
+      }, 1500);
+    }
+    
+    // --- MORALE SYSTEM ---
+    function updateMoraleDisplay() {
+      const moraleFill = document.getElementById('moraleFill');
+      const moraleIcon = document.getElementById('moraleIcon');
+      moraleFill.style.width = currentMorale + '%';
+      
+      if (currentMorale >= 80) moraleIcon.textContent = '😊';
+      else if (currentMorale >= 60) moraleIcon.textContent = '😐';
+      else if (currentMorale >= 40) moraleIcon.textContent = '😕';
+      else moraleIcon.textContent = '😠';
+    }
+    
+    function updateMoraleOverTime() {
+      setInterval(() => {
+        if (currentEvent && currentEvent.type === 'bard_visit') {
+            lastInteractionTime = Date.now(); // Keep morale high during bard visit
+            return;
+        }
+
+        if (currentGnomeData && Date.now() - lastInteractionTime > 60000) {
+          currentMorale = Math.max(0, currentMorale - 1);
+          updateMoraleDisplay();
+          addDiaryEntry('morale_down');
+        }
+      }, 30000);
+    }
+    
+    // --- GALLERY ---
+    function loadGallery() {
+      const galleryContent = document.getElementById('galleryContent');
+      galleryContent.innerHTML = '';
+      const gnomes = Object.values(gnomeRegistry);
+      
+      if (gnomes.length === 0) {
+        galleryContent.innerHTML = '<p style="text-align: center;">No gnomes summoned yet!</p>';
+        return;
+      }
+      
+      gnomes.forEach(gnome => {
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
+        item.onclick = () => { displayGnome(gnome); closeWindow('galleryWindow'); openMainWindow(); };
+        
+        item.innerHTML = `
+          <div class="gallery-item-preview">
+            <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 40px;">⛏️</div>
+          </div>
+          <div style="font-size: 14px; font-weight: bold;">${gnome.name}</div>
+          <div class="rank-${gnome.rank.name.toLowerCase().replace(/ /g, '-')}" style="font-size: 12px;">${gnome.rank.name}</div>
+        `;
+        galleryContent.appendChild(item);
+      });
+    }
+    
+    // --- STORE ---
+    const storeItems = {
+      'mushroom_stew': { name: '🍄 Mushroom Stew', price: 10, morale: 15, description: 'A hearty meal. +15 Morale.' },
+      'sharpening_kit': { name: '⛏️ Sharpening Kit', price: 8, morale: 10, description: 'Keeps tools keen. +10 Morale.' },
+      'song_book': { name: '🎵 Song Book', price: 5, morale: 7, description: 'Boosts spirits. +7 Morale.' }
+    };
+
+    function loadStore() {
+      const storeContent = document.getElementById('storeContent');
+      storeContent.innerHTML = ''; // Clear previous content
+
+      for (const [id, item] of Object.entries(storeItems)) {
+        const canAfford = currentGnomeData && currentGnomeData.rockChips >= item.price;
+        const itemHtml = `
+          <div style="border: 2px inset #808080; padding: 8px; margin-bottom: 8px; background: #C6C6C6;">
+            <strong>${item.name}</strong>
+            <p style="font-size: 14px; margin: 4px 0;">${item.description}</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span>Price: ${item.price} Chips</span>
+              <button class="button" onclick="buyItem('${id}')" ${!canAfford ? 'disabled' : ''}>Buy</button>
+            </div>
+          </div>
+        `;
+        storeContent.innerHTML += itemHtml;
+      }
+    }
+
+    function buyItem(itemId) {
+      if (!currentGnomeData) return;
+      const item = storeItems[itemId];
+      if (currentGnomeData.rockChips >= item.price) {
+        currentGnomeData.rockChips -= item.price;
+        
+        let moraleGain = item.morale;
+        // Check for fulfilled request
+        if (currentGnomeData.activeRequest && currentGnomeData.activeRequest.itemId === itemId) {
+            moraleGain *= 2; // Double morale gain!
+            showFloatingText(`Request fulfilled! Extra morale!`);
+            currentGnomeData.activeRequest = null;
+            addDiaryEntry('request_fulfilled', { itemName: item.name });
+        } else {
+            showFloatingText(`Purchased ${item.name}!`);
+        }
+
+        currentMorale = Math.min(100, currentMorale + moraleGain);
+        
+        updateGnomeData();
+        updateMoraleDisplay();
+
+        document.getElementById('rockChipsDisplay').textContent = `Rock Chips: ${currentGnomeData.rockChips}`;
+        loadStore(); // Refresh store to update button states
+        if (!currentGnomeData.activeRequest) { // Avoid double-entry
+            addDiaryEntry('item_bought', { itemName: item.name });
+        }
+
+      } else {
+        showAlert("You don't have enough Rock Chips!");
+      }
+    }
+
+    // --- DIARY ---
+    const diaryTemplates = {
+      'work': {
+        'Grumpy': ["Another day, another rock.", "The pickaxe feels heavy today.", "Is it time to nap yet?", "Found some chips. Fine."],
+        'Jolly': ["Whistled a tune while I worked!", "Found a perfectly round pebble!", "Hi ho, hi ho, it's off to work I go!", "More shiny chips for my collection!"],
+        'Hard-working': ["Progress was made today.", "The rock yields to my efforts.", "One chip at a time.", "Dedication builds the mountain."],
+        'Sneezy': ["Achoo! This dust gets everywhere.", "Found some... achoo!... chips.", "My nose tickles something fierce."],
+        'Sleepy': ["*Yawn*... just a little more digging.", "Found a comfy-looking rock to nap on... and some chips.", "Is it quitting time?"],
+        'Clever': ["Discovered a new vein today. As expected.", "A strategic swing yielded results.", "The stones whisper their secrets to me."],
+        'Dopey': ["I was digging and... oh, shiny!", "Where did this pickaxe come from again?", "I think I found something? Hooray!"],
+        'Gassy': ["*Toot!* That mushroom stew is potent.", "Every swing is a gamble... and not just for chips.", "The canary seems to be judging me."]
+      },
+      'morale_down': {
+        'Grumpy': ["Feeling even more grumpy.", "The darkness of the cave is getting to me."],
+        'Jolly': ["Feeling a little less jolly today.", "Need to sing a song to cheer up."],
+        'default': ["My spirits are a bit low.", "Feeling a bit weary."]
+      },
+      'item_bought': {
+        'default': ["A purchase from the store! What a treat.", "It's nice to have something new."]
+      },
+      'request': {
+        'default': [
+            "I've heard tales of the {itemName} at the store. It might just lift my spirits.",
+            "My pickaxe feels dull... perhaps a {itemName} would help me feel better about my work.",
+            "A gnome can dream of a {itemName}, can't they?"
+        ]
+      },
+      'request_fulfilled': {
+        'default': ["They got me the {itemName}! I feel reinvigorated!", "My request was answered! The mines seem brighter today."]
+      }
+    };
+
+    function addDiaryEntry(eventType, details = {}) {
+      if (!currentGnomeData) return;
+
+      const personality = currentGnomeData.personality;
+      let templates = diaryTemplates[eventType][personality] || diaryTemplates[eventType]['default'] || [];
+      
+      let entryText = templates[Math.floor(Math.random() * templates.length)] || '';
+      
+      if (eventType === 'item_bought' && details.itemName) {
+        entryText = `Treated myself to some ${details.itemName}. A good choice.`;
+      }
+      
+      if (eventType === 'request_fulfilled' && details.itemName) {
+        entryText = diaryTemplates.request_fulfilled.default[Math.floor(Math.random() * diaryTemplates.request_fulfilled.default.length)].replace('{itemName}', details.itemName);
+      }
+
+      if (entryText) {
+        const timestamp = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        currentGnomeData.diaryEntries.unshift({ timestamp, text: entryText });
+        if (currentGnomeData.diaryEntries.length > 50) { // Limit diary size
+          currentGnomeData.diaryEntries.pop();
+        }
+      }
+
+      // Handle new request generation after morale drop
+      if (eventType === 'morale_down' && !currentGnomeData.activeRequest && Math.random() < 0.2) {
+        const itemIds = Object.keys(storeItems);
+        const randomItemId = itemIds[Math.floor(Math.random() * itemIds.length)];
+        const requestedItem = storeItems[randomItemId];
+        let requestText = diaryTemplates.request.default[Math.floor(Math.random() * diaryTemplates.request.default.length)].replace('{itemName}', requestedItem.name);
+        
+        currentGnomeData.activeRequest = { itemId: randomItemId, text: requestText };
+        currentGnomeData.diaryEntries.unshift({
+            timestamp: new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+            text: requestText
+        });
+      }
+
+      updateGnomeData();
+    }
+
+    function loadDiary() {
+      const diaryContent = document.getElementById('diaryContent');
+      if (!currentGnomeData || currentGnomeData.diaryEntries.length === 0) {
+        diaryContent.innerHTML = `<p>The pages are blank for now...</p>`;
+        return;
+      }
+
+      let diaryHtml = '';
+      for (const entry of currentGnomeData.diaryEntries) {
+        diaryHtml += `
+          <div style="border-bottom: 1px dotted #808080; padding: 8px 4px; margin-bottom: 4px;">
+            <strong style="font-size: 12px; color: #666;">${entry.timestamp}</strong><br>
+            <em>"${entry.text}"</em>
+          </div>
+        `;
+      }
+      diaryContent.innerHTML = diaryHtml;
+    }
+    
+    // --- EVENT SYSTEM ---
+    function checkForRandomEvent() {
+      if (currentEvent && currentEvent.expires < Date.now()) {
+        showAlert(`The "${currentEvent.name}" event has ended.`);
+        currentEvent = null;
+        updateEventDisplay();
+      }
+
+      if (currentEvent) {
+          updateEventDisplay(); // Keep timer updated
+          return;
+      }
+      
+      for (const event of gnomishEvents) {
+        if (Math.random() < event.chance) {
+          startEvent(event);
+          break; // Only one event at a time
+        }
+      }
+    }
+    
+    function startEvent(eventData) {
+        currentEvent = {
+            name: eventData.name,
+            type: eventData.type,
+            expires: Date.now() + eventData.duration
+        };
+        showAlert(`${eventData.name}\n${eventData.description}`);
+        
+        if (eventData.type === 'good_fortune') {
+            if (currentGnomeData) {
+                currentGnomeData.rockChips += 25;
+                updateGnomeData();
+                document.getElementById('rockChipsDisplay').textContent = `Rock Chips: ${currentGnomeData.rockChips}`;
+            }
+            currentEvent = null; // Instant event, doesn't persist
+        }
+        updateEventDisplay();
+    }
+
+    function updateEventDisplay() {
+        const display = document.getElementById('eventDisplay');
+        if (!currentEvent) {
+            display.textContent = '';
+            return;
+        }
+        const timeLeft = Math.round((currentEvent.expires - Date.now()) / 1000);
+        if (timeLeft > 0) {
+            display.textContent = `${currentEvent.name} (${Math.floor(timeLeft/60)}m ${timeLeft%60}s)`;
+        } else {
+            display.textContent = '';
+        }
+    }
+    
+    // --- LEADERBOARD SYSTEM ---
+    let leaderboardData = null;
+    let currentLeaderboardType = 'earnings';
+
+    function generateLeaderboardData() {
+        if (leaderboardData) return leaderboardData; // Only generate once
+        
+        const data = {
+            earnings: [],
+            productive: []
         };
 
-        const GNOME_DATA = {
-            TRAITS: [
-                "MYCELIUM NETWORK ACCESS",
-                "QUANTUM ROOT SYSTEM",
-                "CRYSTALLINE BEARD",
-                "PHOTOSYNTHETIC HAT",
-                "GEOMANCY PROTOCOLS",
-                "SPORE COMMUNICATION"
-            ],
-            LORE: [
-                "ANCIENT EARTHWARDEN PROTOCOL ACTIVATED",
-                "MYCOLOGICAL SENTIENCE CORE ENGAGED",
-                "GEOLOGICAL MEMORY BANKS INITIALIZED",
-                "PHOTONIC GROWTH MATRIX ACTIVE"
-            ]
+        // Generate 50 fake gnomes for leaderboards
+        for (let i = 0; i < 50; i++) {
+            const wallet = generateFakeSolanaWallet();
+            const gnome = generateLeaderboardGnome(wallet, i);
+            
+            data.earnings.push({
+                rank: i + 1,
+                wallet: wallet,
+                gnome: gnome,
+                value: gnome.rockChips,
+                label: `${gnome.rockChips} chips`
+            });
+            
+            data.productive.push({
+                rank: i + 1,
+                wallet: wallet,
+                gnome: gnome,
+                value: gnome.workSessions,
+                label: `${gnome.workSessions} sessions`
+            });
+        }
+
+        // Sort each leaderboard by their respective values
+        data.earnings.sort((a, b) => b.value - a.value);
+        data.productive.sort((a, b) => b.value - a.value);
+
+        // Update ranks after sorting
+        Object.keys(data).forEach(key => {
+            data[key].forEach((entry, index) => {
+                entry.rank = index + 1;
+            });
+        });
+
+        leaderboardData = data;
+        return data;
+    }
+
+    function generateFakeSolanaWallet() {
+        const chars = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+        let wallet = '';
+        for (let i = 0; i < 44; i++) {
+            wallet += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return wallet;
+    }
+
+    function generateLeaderboardGnome(wallet, index) {
+        const seed = hashCode(wallet);
+        const rng = mulberry32(seed);
+        
+        // Generate rank (higher ranks for top players)
+        let rankIndex;
+        if (index < 5) rankIndex = 5; // Top 5 get mythic
+        else if (index < 15) rankIndex = 4; // Next 10 get legendary
+        else if (index < 30) rankIndex = 3; // Next 15 get epic
+        else rankIndex = Math.floor(rng() * 3); // Rest get random lower ranks
+        
+        const rank = gnomeAttributes.ranks[rankIndex];
+        
+        const namePrefix = ['Glim', 'Borin', 'Durin', 'Fiz', 'Nog', 'Zook', 'Gruk', 'Brix', 'Thok', 'Korg'];
+        const nameSuffix = ['beard', 'pick', 'nugget', 'hammer', 'stone', 'gem', 'dust', 'ore', 'shaft', 'vein'];
+        const name = namePrefix[Math.floor(rng() * namePrefix.length)] + nameSuffix[Math.floor(rng() * nameSuffix.length)];
+        
+        // Generate stats based on rank and position
+        const baseChips = Math.floor(1000 - (index * 15) + (rng() * 200));
+        const rockChips = Math.max(50, baseChips + (rankIndex * 100));
+        
+        const baseSessions = Math.floor(500 - (index * 8) + (rng() * 100));
+        const workSessions = Math.max(20, baseSessions + (rankIndex * 50));
+
+        return {
+            name: name,
+            rank: rank,
+            beardStyle: gnomeAttributes.beardStyles[Math.floor(rng() * gnomeAttributes.beardStyles.length)],
+            hatColor: gnomeAttributes.hatColors[Math.floor(rng() * gnomeAttributes.hatColors.length)],
+            miningTool: gnomeAttributes.miningTools[Math.floor(rng() * gnomeAttributes.miningTools.length)],
+            personality: gnomeAttributes.personalities[Math.floor(rng() * gnomeAttributes.personalities.length)],
+            rockChips: rockChips,
+            workSessions: workSessions
         };
+    }
 
-        let gnomeHistory = JSON.parse(localStorage.getItem('gnomeHistory') || '[]');
+    function loadLeaderboards() {
+        showLeaderboard('earnings'); // Default to earnings leaderboard
+    }
 
-        function terminalLog(message, speed = 30) {
-            const output = document.getElementById('output');
-            const div = document.createElement('div');
-            output.appendChild(div);
+    function showLeaderboard(type) {
+        currentLeaderboardType = type;
+        const data = generateLeaderboardData();
+        const leaderboardData = data[type];
+        
+        // Update tab appearance
+        document.querySelectorAll('#leaderboardContent .button').forEach(btn => {
+            btn.style.background = '#C6C6C6';
+        });
+        document.getElementById(type + 'Tab').style.background = '#808080';
+        
+        let html = '<div style="background: #A0A0A0; border: 2px solid #000; padding: 8px; margin-bottom: 8px;">';
+        
+        if (type === 'earnings') {
+            html += '<strong>💰 Top Rock Chip Earners</strong><br><small>The wealthiest miners in Gnomeria</small>';
+        } else {
+            html += '<strong>⚡ Most Active Miners</strong><br><small>Gnomes with the most work sessions</small>';
+        }
+        
+        html += '</div>';
+
+        // Show top 20 entries
+        for (let i = 0; i < Math.min(20, leaderboardData.length); i++) {
+            const entry = leaderboardData[i];
+            const isCurrentUser = currentGnomeData && entry.wallet === currentGnomeData.id;
+            const bgColor = isCurrentUser ? '#FFFF99' : (i < 3 ? '#FFE5B4' : '#F0F0F0');
             
-            let i = 0;
-            function typeWriter() {
-                if (i < message.length) {
-                    div.innerHTML += message.charAt(i);
-                    i++;
-                    setTimeout(typeWriter, speed);
-                }
-            }
-            typeWriter();
+            let rankEmoji = '';
+            if (i === 0) rankEmoji = '🥇';
+            else if (i === 1) rankEmoji = '🥈';
+            else if (i === 2) rankEmoji = '🥉';
+            else rankEmoji = `${i + 1}.`;
+
+            html += `
+                <div style="border: 2px inset #808080; padding: 8px; margin-bottom: 4px; background: ${bgColor}; font-size: 14px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-weight: bold; min-width: 30px;">${rankEmoji}</span>
+                            <div>
+                                <div style="font-weight: bold;">${entry.gnome.name}</div>
+                                <div class="rank-${entry.gnome.rank.name.toLowerCase().replace(/ /g, '-')}" style="font-size: 12px;">
+                                    ${entry.gnome.rank.name}
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-weight: bold;">${entry.label}</div>
+                            <div style="font-size: 10px; color: #666; font-family: monospace;">
+                                ${entry.wallet.substring(0, 4)}...${entry.wallet.substring(entry.wallet.length - 4)}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
-        function playSound(freq = 1000, duration = 0.1, type = 'square') {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            
-            osc.type = type;
-            osc.frequency.value = freq;
-            gain.gain.setValueAtTime(0.1, ctx.currentTime);
-            
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            
-            osc.start();
-            osc.stop(ctx.currentTime + duration);
-        }
-
-        function generateGnomeDNA() {
-            return {
-                hat: getWeightedComponent('HATS'),
-                face: getWeightedComponent('FACES'),
-                body: getWeightedComponent('BODIES'),
-                feet: getWeightedComponent('FEET'),
-                timestamp: Date.now()
-            };
-        }
-
-        function getWeightedComponent(type) {
-            const components = GNOME_COMPONENTS[type];
-            const total = components.reduce((acc, curr) => acc + curr.rarity, 0);
-            let random = Math.random() * total;
-            
-            for(const component of components) {
-                if(random < component.rarity) return component;
-                random -= component.rarity;
-            }
-            return components[0];
-        }
-
-        function calculateRarity(dna) {
-            return ((dna.hat.rarity + dna.face.rarity + dna.body.rarity + dna.feet.rarity) / 4) * 100;
-        }
-
-        function saveToHistory(gnome) {
-            gnomeHistory.unshift(gnome);
-            if(gnomeHistory.length > 5) gnomeHistory.pop();
-            localStorage.setItem('gnomeHistory', JSON.stringify(gnomeHistory));
-            updateHistoryDisplay();
-        }
-
-        function updateHistoryDisplay() {
-            const history = document.getElementById('history');
-            history.innerHTML = gnomeHistory
-                .map(g => `<div class="gnome-id" onclick="loadGnome('${g.id}')">
-                    [${g.timestamp}] ${g.id} - ${g.rarity.toFixed(1)}%
-                </div>`)
-                .join('');
-        }
-
-        function loadGnome(id) {
-            const gnome = gnomeHistory.find(g => g.id === id);
-            if(gnome) displayGnome(gnome);
-            playSound(800, 0.2);
-        }
-
-        function displayGnome(data) {
-            const output = document.getElementById('output');
-            output.innerHTML = '';
-
-            const gnomeArt = `${data.dna.hat.art}\n${data.dna.face.art}\n${data.dna.body.art}\n${data.dna.feet.art}`;
-            
-            const pre = document.createElement('pre');
-            pre.className = 'gnome-display';
-            pre.textContent = gnomeArt;
-            pre.onclick = () => handleGnomeClick(data);
-            output.appendChild(pre);
-
-            const rarityBar = document.createElement('div');
-            rarityBar.className = 'rarity-meter';
-            rarityBar.innerHTML = `<div class="rarity-fill" style="width: ${data.rarity}%"></div>`;
-            output.appendChild(rarityBar);
-
-            terminalLog(`\nGNOME ID: ${data.id}`);
-            terminalLog(`\nUSER: ${data.username.toUpperCase()}`);
-            terminalLog(`\nRARITY: ${data.rarity.toFixed(1)}%`);
-            terminalLog(`\nTRAITS:`);
-            data.traits.forEach(t => terminalLog(` - ${t}`));
-            terminalLog(`\nLORE: ${data.lore}`);
-        }
-
-        function handleGnomeClick(data) {
-            const partIndex = prompt(`SELECT COMPONENT TO REGENERATE (1-4):\n1. Hat\n2. Face\n3. Body\n4. Feet`) - 1;
-            if(partIndex >= 0 && partIndex <= 3) {
-                const parts = ['HATS', 'FACES', 'BODIES', 'FEET'];
-                data.dna[parts[partIndex].toLowerCase()] = getWeightedComponent(parts[partIndex]);
-                data.rarity = calculateRarity(data.dna);
-                saveToHistory(data);
-                displayGnome(data);
-                playSound(1200, 0.1);
+        // Show current user's position if not in top 20
+        if (currentGnomeData) {
+            const userEntry = leaderboardData.find(entry => entry.wallet === currentGnomeData.id);
+            if (!userEntry && currentGnomeData.id) {
+                // Add current user to the leaderboard data if they're not there
+                const currentUserValue = type === 'earnings' ? (currentGnomeData.rockChips || 0) : 50; // Fake work sessions for demo
+                
+                html += `
+                    <div style="border: 2px solid #000; border-style: dashed; padding: 8px; margin-top: 12px; background: #FFFF99; font-size: 14px;">
+                        <div style="text-align: center; margin-bottom: 4px;"><strong>Your Position</strong></div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-weight: bold;">???.</span>
+                                <div>
+                                    <div style="font-weight: bold;">${currentGnomeData.name}</div>
+                                    <div class="rank-${currentGnomeData.rank.name.toLowerCase().replace(/ /g, '-')}" style="font-size: 12px;">
+                                        ${currentGnomeData.rank.name}
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-weight: bold;">${currentUserValue} ${type === 'earnings' ? 'chips' : 'sessions'}</div>
+                                <div style="font-size: 10px; color: #666; font-family: monospace;">
+                                    ${currentGnomeData.id.substring(0, 4)}...${currentGnomeData.id.substring(currentGnomeData.id.length - 4)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
             }
         }
 
-        function initiateGeneration() {
-            const email = document.getElementById('email').value;
-            const username = document.getElementById('username').value;
-            const error = document.getElementById('error');
-            const loading = document.getElementById('loading');
-            const progressFill = document.querySelector('.progress-fill');
+        document.getElementById('leaderboardData').innerHTML = html;
+    }
+    
+    // --- GNOMEDEX TRADING SYSTEM ---
+    // tradingData declared later in the file
 
-            error.textContent = '';
-            output.innerHTML = '';
+    function loadTrading() {
+        initializeTradingData();
+        switchTradingPair();
+        updatePortfolioDisplay();
+        generateRecentTrades();
+        startPriceUpdates();
+    }
 
-            if(!validateEmail(email) || !username) {
-                error.textContent = "ERROR: INVALID CREDENTIALS\nVALID EMAIL AND GNOME ID REQUIRED";
-                playSound(300, 0.3, 'sawtooth');
+    function initializeTradingData() {
+        // Initialize portfolio with default values
+        if (!tradingData.portfolio.CHIPS) tradingData.portfolio.CHIPS = 0;
+        if (!tradingData.portfolio.BEARD) tradingData.portfolio.BEARD = 0;
+        if (!tradingData.portfolio.PICKAXE) tradingData.portfolio.PICKAXE = 0;
+        if (!tradingData.portfolio.CAVE) tradingData.portfolio.CAVE = 0;
+        if (!tradingData.portfolio.GEM) tradingData.portfolio.GEM = 0;
+
+        // Generate initial price history for each token
+        Object.keys(tradingData.tokens).forEach(token => {
+            if (tradingData.tokens[token].history.length === 0) {
+                generatePriceHistory(token);
+            }
+        });
+
+        // Initialize chart
+        const canvas = document.getElementById('tradingChart');
+        if (canvas) {
+            tradingData.chartCtx = canvas.getContext('2d');
+        }
+    }
+
+    function generatePriceHistory(token) {
+        const tokenData = tradingData.tokens[token];
+        const history = [];
+        let currentPrice = tokenData.price;
+        
+        // Generate 50 historical points
+        for (let i = 49; i >= 0; i--) {
+            const volatility = 0.05; // 5% max change per point
+            const change = (Math.random() - 0.5) * volatility;
+            currentPrice *= (1 + change);
+            history.push({
+                price: Math.max(0.01, currentPrice),
+                timestamp: Date.now() - (i * 60000) // 1 minute intervals
+            });
+        }
+        
+        tokenData.history = history;
+    }
+
+    function switchTradingPair() {
+        const pair = document.getElementById('tradingPair').value;
+        tradingData.currentPair = pair;
+        updateMarketDisplay();
+        updateTradeButton();
+        drawChart();
+    }
+
+    function updateMarketDisplay() {
+        const token = tradingData.tokens[tradingData.currentPair];
+        document.getElementById('currentPrice').textContent = `$${token.price.toFixed(2)}`;
+        
+        const changeEl = document.getElementById('priceChange');
+        changeEl.textContent = `${token.change24h >= 0 ? '+' : ''}${token.change24h.toFixed(2)}%`;
+        changeEl.style.color = token.change24h >= 0 ? '#00ff41' : '#ff4444';
+        
+        document.getElementById('volume').textContent = token.volume.toLocaleString();
+        document.getElementById('high24h').textContent = `$${token.high24h.toFixed(2)}`;
+        document.getElementById('low24h').textContent = `$${token.low24h.toFixed(2)}`;
+        document.getElementById('marketCap').textContent = `$${(token.price * 1000000).toLocaleString()}`;
+        document.getElementById('supply').textContent = '1,000,000';
+        
+        // Update trade price input
+        document.getElementById('tradePrice').placeholder = `${token.price.toFixed(2)}`;
+    }
+
+    function drawChart() {
+        if (!tradingData.chartCtx) return;
+        
+        const ctx = tradingData.chartCtx;
+        const canvas = ctx.canvas;
+        const token = tradingData.tokens[tradingData.currentPair];
+        const history = token.history;
+        
+        // Clear canvas
+        ctx.fillStyle = '#0a0a0a';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        if (history.length < 2) return;
+        
+        // Calculate price range
+        const prices = history.map(h => h.price);
+        const minPrice = Math.min(...prices);
+        const maxPrice = Math.max(...prices);
+        const priceRange = maxPrice - minPrice || 1;
+        
+        // Draw candlesticks
+        const barWidth = canvas.width / history.length;
+        
+        for (let i = 0; i < history.length; i++) {
+            const price = history[i].price;
+            const x = i * barWidth;
+            const height = ((price - minPrice) / priceRange) * (canvas.height - 20);
+            const y = canvas.height - height - 10;
+            
+            // Determine color based on price movement
+            const isUp = i === 0 || price >= history[i-1].price;
+            ctx.fillStyle = isUp ? '#00ff41' : '#ff4444';
+            ctx.fillRect(x, y, barWidth - 1, height);
+        }
+        
+        // Draw price line
+        ctx.beginPath();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1;
+        
+        for (let i = 0; i < history.length; i++) {
+            const price = history[i].price;
+            const x = (i * barWidth) + (barWidth / 2);
+            const y = canvas.height - (((price - minPrice) / priceRange) * (canvas.height - 20)) - 10;
+            
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+    }
+
+    function setTradeType(type) {
+        tradingData.tradeType = type;
+        
+        const buyBtn = document.getElementById('buyBtn');
+        const sellBtn = document.getElementById('sellBtn');
+        
+        if (type === 'buy') {
+            buyBtn.style.background = '#4CAF50';
+            buyBtn.style.color = 'white';
+            sellBtn.style.background = '#C6C6C6';
+            sellBtn.style.color = 'black';
+        } else {
+            sellBtn.style.background = '#f44336';
+            sellBtn.style.color = 'white';
+            buyBtn.style.background = '#C6C6C6';
+            buyBtn.style.color = 'black';
+        }
+        
+        updateTradeButton();
+    }
+
+    function updateTradeButton() {
+        const btn = document.getElementById('executeTradeBtn');
+        const action = tradingData.tradeType.toUpperCase();
+        const token = tradingData.currentPair;
+        btn.textContent = `${action} ${token}`;
+    }
+
+    function executeTrade() {
+        const amount = parseFloat(document.getElementById('tradeAmount').value);
+        const customPrice = parseFloat(document.getElementById('tradePrice').value);
+        
+        if (!amount || amount <= 0) {
+            showAlert('Please enter a valid amount!');
+            return;
+        }
+        
+        const token = tradingData.tokens[tradingData.currentPair];
+        const price = customPrice || token.price;
+        const totalCost = amount * price;
+        
+        // Sync with current gnome's rock chips
+        if (currentGnomeData) {
+            tradingData.portfolio.CHIPS = currentGnomeData.rockChips || 0;
+        }
+        
+        if (tradingData.tradeType === 'buy') {
+            if (tradingData.portfolio.CHIPS < totalCost) {
+                showAlert(`Insufficient Rock Chips! You need ${totalCost.toFixed(2)} but only have ${tradingData.portfolio.CHIPS}.`);
                 return;
             }
+            
+            tradingData.portfolio.CHIPS -= totalCost;
+            tradingData.portfolio[tradingData.currentPair] = (tradingData.portfolio[tradingData.currentPair] || 0) + amount;
+            
+            showFloatingText(`✅ Bought ${amount} ${tradingData.currentPair} for ${totalCost.toFixed(2)} chips!`);
+        } else {
+            if ((tradingData.portfolio[tradingData.currentPair] || 0) < amount) {
+                showAlert(`Insufficient ${tradingData.currentPair} tokens!`);
+                return;
+            }
+            
+            tradingData.portfolio[tradingData.currentPair] -= amount;
+            tradingData.portfolio.CHIPS += totalCost;
+            
+            showFloatingText(`✅ Sold ${amount} ${tradingData.currentPair} for ${totalCost.toFixed(2)} chips!`);
+        }
+        
+        // Update gnome's rock chips
+        if (currentGnomeData) {
+            currentGnomeData.rockChips = Math.floor(tradingData.portfolio.CHIPS);
+            updateGnomeData();
+            document.getElementById('rockChipsDisplay').textContent = `Rock Chips: ${currentGnomeData.rockChips}`;
+        }
+        
+        // Add to recent trades
+        tradingData.recentTrades.unshift({
+            type: tradingData.tradeType,
+            token: tradingData.currentPair,
+            amount: amount,
+            price: price,
+            timestamp: Date.now()
+        });
+        
+        if (tradingData.recentTrades.length > 10) {
+            tradingData.recentTrades.pop();
+        }
+        
+        // Save portfolio
+        localStorage.setItem('gnomeDexPortfolio', JSON.stringify(tradingData.portfolio));
+        
+        // Clear inputs
+        document.getElementById('tradeAmount').value = '';
+        document.getElementById('tradePrice').value = '';
+        
+        updatePortfolioDisplay();
+        updateRecentTrades();
+    }
 
-            loading.style.display = 'block';
-            progressFill.style.width = '100%';
+    function updatePortfolioDisplay() {
+        // Sync with current gnome
+        if (currentGnomeData) {
+            tradingData.portfolio.CHIPS = currentGnomeData.rockChips || 0;
+        }
+        
+        document.getElementById('portfolioChips').textContent = tradingData.portfolio.CHIPS.toFixed(2);
+        
+        let tokensHtml = '';
+        let totalValue = tradingData.portfolio.CHIPS;
+        
+        Object.keys(tradingData.tokens).forEach(token => {
+            const amount = tradingData.portfolio[token] || 0;
+            if (amount > 0) {
+                const value = amount * tradingData.tokens[token].price;
+                totalValue += value;
+                tokensHtml += `<div>${token}: ${amount.toFixed(2)} (~${value.toFixed(2)} chips)</div>`;
+            }
+        });
+        
+        document.getElementById('portfolioTokens').innerHTML = tokensHtml || '<div style="color: #666;">No tokens held</div>';
+        document.getElementById('portfolioValue').textContent = `${totalValue.toFixed(2)} Chips`;
+    }
 
-            setTimeout(() => {
-                loading.style.display = 'none';
-                progressFill.style.width = '0%';
+    function generateRecentTrades() {
+        // Generate some fake recent trades from other "users"
+        const fakeTraders = ['GnomeMaster', 'DiamondBeard', 'CaveExplorer', 'RockHodler', 'MiningWiz'];
+        const tokens = Object.keys(tradingData.tokens);
+        
+        for (let i = 0; i < 8; i++) {
+            const token = tokens[Math.floor(Math.random() * tokens.length)];
+            const price = tradingData.tokens[token].price;
+            const amount = Math.random() * 50 + 1;
+            const type = Math.random() > 0.5 ? 'buy' : 'sell';
+            
+            tradingData.recentTrades.push({
+                type: type,
+                token: token,
+                amount: amount,
+                price: price * (0.95 + Math.random() * 0.1), // ±5% price variation
+                timestamp: Date.now() - (i * 30000),
+                trader: fakeTraders[Math.floor(Math.random() * fakeTraders.length)]
+            });
+        }
+        
+        updateRecentTrades();
+    }
+
+    function updateRecentTrades() {
+        let html = '';
+        tradingData.recentTrades.slice(0, 8).forEach(trade => {
+            const timeAgo = Math.floor((Date.now() - trade.timestamp) / 1000 / 60);
+            const color = trade.type === 'buy' ? '#4CAF50' : '#f44336';
+            const trader = trade.trader || 'You';
+            
+            html += `<div style="color: ${color}; margin-bottom: 2px;">
+                ${trader}: ${trade.type.toUpperCase()} ${trade.amount.toFixed(2)} ${trade.token} @ ${trade.price.toFixed(2)} (${timeAgo}m ago)
+            </div>`;
+        });
+        
+        document.getElementById('recentTrades').innerHTML = html;
+    }
+
+    function startPriceUpdates() {
+        setInterval(() => {
+            // Update prices with some volatility
+            Object.keys(tradingData.tokens).forEach(token => {
+                const tokenData = tradingData.tokens[token];
+                const volatility = 0.02; // 2% max change
+                const change = (Math.random() - 0.5) * volatility;
                 
-                const dna = generateGnomeDNA();
-                const gnomeData = {
-                    id: `GNO-${Date.now().toString(36).toUpperCase()}`,
-                    username,
-                    dna,
-                    traits: getRandomTraits(3),
-                    lore: getRandomLore(),
-                    rarity: calculateRarity(dna),
+                tokenData.price *= (1 + change);
+                tokenData.price = Math.max(0.01, tokenData.price);
+                
+                // Update 24h change
+                tokenData.change24h += (Math.random() - 0.5) * 2;
+                
+                // Add to history
+                tokenData.history.push({
+                    price: tokenData.price,
                     timestamp: Date.now()
-                };
+                });
+                
+                // Keep only last 50 points
+                if (tokenData.history.length > 50) {
+                    tokenData.history.shift();
+                }
+                
+                // Update 24h high/low
+                const recent = tokenData.history.slice(-24);
+                const prices = recent.map(h => h.price);
+                tokenData.high24h = Math.max(...prices);
+                tokenData.low24h = Math.min(...prices);
+            });
+            
+            // Update display if trading window is open
+            if (document.getElementById('tradingWindow').classList.contains('active')) {
+                updateMarketDisplay();
+                drawChart();
+                updatePortfolioDisplay();
+            }
+        }, 5000); // Update every 5 seconds
+    }
+    
+    // --- DATA MANAGEMENT ---
+    function updateGnomeData() {
+      if (!currentGnomeData) return;
+      currentGnomeData.morale = currentMorale;
+      gnomeRegistry[currentGnomeData.id] = currentGnomeData;
+      localStorage.setItem('gnomeRegistry', JSON.stringify(gnomeRegistry));
+    }
+    
+    // --- SHARING ---
+    function shareGnome() {
+      if (!currentGnomeData) return;
+      const text = `Behold my ${currentGnomeData.rank.name}, "${currentGnomeData.name}"! ⛏️\n\n` +
+                   `He's a ${currentGnomeData.personality} fellow with a ${currentGnomeData.beardStyle} beard.\n` +
+                   `Join the $GNOME mines!\n\n`;
+      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
+    }
+    
+    function saveGnomeImage() {
+      if (!renderer || !scene || !camera) return;
+      renderer.render(scene, camera);
+      const link = document.createElement('a');
+      link.download = `${currentGnomeData.name}_GnomeMiner.png`;
+      link.href = renderer.domElement.toDataURL('image/png');
+      link.click();
+    }
+    
+    function copyGnomeData() {
+      if (!currentGnomeData) return;
+      navigator.clipboard.writeText(JSON.stringify(currentGnomeData, null, 2)).then(() => {
+        showAlert('Gnome data copied to clipboard!');
+      });
+    }
+    
+    // --- UTILITY FUNCTIONS ---
+    function showFloatingText(text) {
+      const float = document.createElement('div');
+      float.style.cssText = `
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0,0,0,0.8);
+        color: white;
+        padding: 8px 16px;
+        border: 2px solid white;
+        font-size: 16px;
+        z-index: 10002;
+        animation: floatUp 2s ease-out forwards;
+      `;
+      float.textContent = text;
+      document.body.appendChild(float);
+      setTimeout(() => float.remove(), 2000);
+    }
+    
+    async function updateProgress(percent, text) {
+      document.getElementById('progressBar').style.width = percent + '%';
+      document.getElementById('statusText').textContent = text;
+    }
+    
+    function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+    function hashCode(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) { hash = ((hash << 5) - hash) + str.charCodeAt(i); hash = hash & hash; }
+      return Math.abs(hash);
+    }
+    function mulberry32(a) {
+      return function() {
+        let t = a += 0x6D2B79F5;
+        t = Math.imul(t ^ t >>> 15, t | 1);
+        t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+      };
+    }
+    function showAbout() { showAlert('Gnome Miners v1.0 - To the center of the earth! ⛏️🚀'); }
+    
+    const style = document.createElement('style');
+    style.textContent = `@keyframes floatUp { 0% { opacity: 0; transform: translate(-50%, -50%); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -150%); } }`;
+    document.head.appendChild(style);
 
-                saveToHistory(gnomeData);
-                displayGnome(gnomeData);
-                playSound();
-            }, 2000);
+    // Initialize Trading System if not already done
+    if (typeof tradingData === 'undefined') {
+      var tradingData = {
+        currentPair: 'BEARD',
+        tokens: {
+          BEARD: { 
+            name: 'BeardCoin', 
+            price: 2.45, 
+            change24h: 12.34, 
+            volume: 15420, 
+            high24h: 2.67, 
+            low24h: 2.12,
+            history: []
+          },
+          PICKAXE: { 
+            name: 'PickaxeToken', 
+            price: 8.90, 
+            change24h: -5.67, 
+            volume: 8930, 
+            high24h: 9.45, 
+            low24h: 8.23,
+            history: []
+          },
+          CAVE: { 
+            name: 'CaveDAO', 
+            price: 0.67, 
+            change24h: 45.23, 
+            volume: 23450, 
+            high24h: 0.89, 
+            low24h: 0.45,
+            history: []
+          },
+          GEM: { 
+            name: 'GemStone', 
+            price: 15.32, 
+            change24h: -12.45, 
+            volume: 5670, 
+            high24h: 17.89, 
+            low24h: 14.23,
+            history: []
+          }
+        },
+        tradeType: 'buy',
+        portfolio: JSON.parse(localStorage.getItem('gnomeDexPortfolio') || '{}'),
+        recentTrades: [],
+        chartCtx: null
+      };
+    }
+
+    // Meme Studio System
+    let memeData = {
+      currentTemplate: 'stonks',
+      templates: {
+        stonks: {
+          name: 'Stonks',
+          background: '#4CAF50',
+          emoji: '📈',
+          defaultTop: 'WHEN GNOME COIN PUMPS',
+          defaultBottom: 'STONKS'
+        },
+        drake: {
+          name: 'Drake Pointing',
+          background: '#FFD700',
+          emoji: '👉',
+          defaultTop: 'SELLING GNOME TOKENS',
+          defaultBottom: 'HODLING GNOME TOKENS'
+        },
+        distracted: {
+          name: 'Distracted Boyfriend',
+          background: '#FF6B6B',
+          emoji: '👀',
+          defaultTop: 'ME',
+          defaultBottom: 'NEW GNOME TOKEN'
+        },
+        thisisfine: {
+          name: 'This is Fine',
+          background: '#FF4444',
+          emoji: '🔥',
+          defaultTop: 'PORTFOLIO DOWN 90%',
+          defaultBottom: 'THIS IS FINE'
+        },
+        galaxy_brain: {
+          name: 'Galaxy Brain',
+          background: '#9C27B0',
+          emoji: '🧠',
+          defaultTop: 'BUYING HIGH',
+          defaultBottom: 'SELLING LOW'
+        },
+        gnome_hodl: {
+          name: 'Gnome HODL',
+          background: '#8B4513',
+          emoji: '⛏️',
+          defaultTop: 'DIAMOND HANDS',
+          defaultBottom: 'GNOME HODL'
+        },
+        gnome_dip: {
+          name: 'Buy the Dip',
+          background: '#2196F3',
+          emoji: '📉',
+          defaultTop: 'GNOME COIN DIPS',
+          defaultBottom: 'TIME TO BUY MORE'
+        },
+        gnome_moon: {
+          name: 'To the Moon',
+          background: '#000080',
+          emoji: '🚀',
+          defaultTop: 'GNOME MINERS',
+          defaultBottom: 'TO THE MOON!'
         }
+      },
+      savedMemes: []
+    };
 
-        function validateEmail(email) {
-            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    function loadMemeStudio() {
+      // Initialize meme canvas
+      updateMemePreview();
+      
+      // Load saved memes count
+      const saved = localStorage.getItem('gnomeMemes');
+      if (saved) {
+        memeData.savedMemes = JSON.parse(saved);
+      }
+    }
+
+    function changeMemeTemplate() {
+      const template = document.getElementById('memeTemplate').value;
+      memeData.currentTemplate = template;
+      
+      // Auto-fill with default text
+      const templateData = memeData.templates[template];
+      document.getElementById('memeTopText').value = templateData.defaultTop;
+      document.getElementById('memeBottomText').value = templateData.defaultBottom;
+      
+      updateMemePreview();
+    }
+
+    function updateMemePreview() {
+      const canvas = document.getElementById('memeCanvas');
+      const ctx = canvas.getContext('2d');
+      const template = memeData.templates[memeData.currentTemplate];
+      
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Background
+      ctx.fillStyle = template.background;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Add gradient overlay
+      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      gradient.addColorStop(0, 'rgba(255,255,255,0.1)');
+      gradient.addColorStop(1, 'rgba(0,0,0,0.3)');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Template-specific graphics
+      drawMemeTemplate(ctx, memeData.currentTemplate);
+      
+      // Add gnome if selected
+      if (document.getElementById('includeGnome').checked && currentGnome) {
+        drawGnomeOnMeme(ctx);
+      }
+      
+      // Text overlay
+      const topText = document.getElementById('memeTopText').value.toUpperCase();
+      const bottomText = document.getElementById('memeBottomText').value.toUpperCase();
+      
+      drawMemeText(ctx, topText, 30, 'top');
+      drawMemeText(ctx, bottomText, canvas.height - 20, 'bottom');
+      
+      // Update stats
+      const totalChars = topText.length + bottomText.length;
+      document.getElementById('memeStats').textContent = 
+        `Template: ${template.name} | Characters: ${totalChars}/100`;
+    }
+
+    function drawMemeTemplate(ctx, templateType) {
+      const centerX = ctx.canvas.width / 2;
+      const centerY = ctx.canvas.height / 2;
+      
+      ctx.save();
+      
+      switch(templateType) {
+        case 'stonks':
+          // Draw stonks arrow
+          ctx.strokeStyle = '#00FF00';
+          ctx.lineWidth = 8;
+          ctx.beginPath();
+          ctx.moveTo(50, 200);
+          ctx.lineTo(100, 150);
+          ctx.lineTo(150, 120);
+          ctx.lineTo(200, 80);
+          ctx.lineTo(230, 60);
+          ctx.stroke();
+          
+          // Arrow head
+          ctx.fillStyle = '#00FF00';
+          ctx.beginPath();
+          ctx.moveTo(230, 60);
+          ctx.lineTo(220, 50);
+          ctx.lineTo(220, 70);
+          ctx.fill();
+          break;
+          
+        case 'drake':
+          // Draw pointing hand
+          ctx.fillStyle = '#FFD700';
+          ctx.font = '60px Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText('👉', centerX, centerY);
+          break;
+          
+        case 'thisisfine':
+          // Draw fire
+          ctx.font = '40px Arial';
+          ctx.textAlign = 'center';
+          for(let i = 0; i < 5; i++) {
+            ctx.fillStyle = i % 2 ? '#FF4444' : '#FF8800';
+            ctx.fillText('🔥', 60 + i * 40, 100 + Math.sin(i) * 20);
+          }
+          break;
+          
+        case 'gnome_hodl':
+          // Draw diamond hands
+          ctx.fillStyle = '#00FFFF';
+          ctx.font = '50px Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText('💎🙌', centerX, centerY);
+          break;
+          
+        case 'gnome_moon':
+          // Draw rocket and moon
+          ctx.fillStyle = '#FFFF00';
+          ctx.font = '30px Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText('🌙', 220, 60);
+          ctx.fillText('🚀', centerX, centerY + 20);
+          break;
+          
+        default:
+          // Default emoji
+          ctx.fillStyle = '#FFFFFF';
+          ctx.font = '60px Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText(memeData.templates[templateType].emoji, centerX, centerY);
+      }
+      
+      ctx.restore();
+    }
+
+    function drawGnomeOnMeme(ctx) {
+      if (!currentGnome) return;
+      
+      const gnomeSize = 40;
+      const x = ctx.canvas.width - gnomeSize - 10;
+      const y = ctx.canvas.height - gnomeSize - 10;
+      
+      // Simple gnome representation
+      ctx.save();
+      ctx.fillStyle = currentGnome.hatColor;
+      ctx.fillRect(x, y, gnomeSize, gnomeSize/2); // Hat
+      
+      ctx.fillStyle = '#FFDBAC';
+      ctx.fillRect(x + 5, y + gnomeSize/2 - 5, gnomeSize - 10, gnomeSize/2); // Face
+      
+      ctx.fillStyle = currentGnome.beardColor;
+      ctx.fillRect(x + 8, y + gnomeSize/2 + 5, gnomeSize - 16, gnomeSize/3); // Beard
+      
+      // Eyes
+      ctx.fillStyle = '#000';
+      ctx.fillRect(x + 12, y + gnomeSize/2, 3, 3);
+      ctx.fillRect(x + gnomeSize - 15, y + gnomeSize/2, 3, 3);
+      
+      ctx.restore();
+    }
+
+    function drawMemeText(ctx, text, y, position) {
+      if (!text) return;
+      
+      ctx.save();
+      ctx.font = 'bold 20px Impact, Arial';
+      ctx.fillStyle = '#FFFFFF';
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = 3;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = position === 'top' ? 'top' : 'bottom';
+      
+      // Word wrap
+      const maxWidth = ctx.canvas.width - 20;
+      const words = text.split(' ');
+      let line = '';
+      let lines = [];
+      
+      for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + ' ';
+        const metrics = ctx.measureText(testLine);
+        const testWidth = metrics.width;
+        
+        if (testWidth > maxWidth && n > 0) {
+          lines.push(line);
+          line = words[n] + ' ';
+        } else {
+          line = testLine;
         }
+      }
+      lines.push(line);
+      
+      // Draw lines
+      const lineHeight = 25;
+      const startY = position === 'top' ? y : y - (lines.length - 1) * lineHeight;
+      
+      lines.forEach((line, index) => {
+        const lineY = startY + index * lineHeight;
+        ctx.strokeText(line, ctx.canvas.width / 2, lineY);
+        ctx.fillText(line, ctx.canvas.width / 2, lineY);
+      });
+      
+      ctx.restore();
+    }
 
-        function getRandomTraits(count) {
-            return GNOME_DATA.TRAITS
-                .sort(() => Math.random() - 0.5)
-                .slice(0, count);
+    function generateRandomMeme() {
+      const templates = Object.keys(memeData.templates);
+      const randomTemplate = templates[Math.floor(Math.random() * templates.length)];
+      
+      document.getElementById('memeTemplate').value = randomTemplate;
+      memeData.currentTemplate = randomTemplate;
+      
+      const cryptoWords = ['HODL', 'MOON', 'DIAMOND HANDS', 'TO THE MOON', 'BUY THE DIP', 'STONKS', 'PUMP', 'LAMBO', 'REKT', 'FOMO'];
+      const gnomeWords = ['GNOME', 'MINING', 'PICKAXE', 'BEARD', 'CAVE', 'GEMS', 'UNDERGROUND', 'TUNNEL'];
+      
+      const randomTop = [...cryptoWords, ...gnomeWords][Math.floor(Math.random() * (cryptoWords.length + gnomeWords.length))];
+      const randomBottom = [...cryptoWords, ...gnomeWords][Math.floor(Math.random() * (cryptoWords.length + gnomeWords.length))];
+      
+      document.getElementById('memeTopText').value = randomTop;
+      document.getElementById('memeBottomText').value = randomBottom;
+      document.getElementById('includeGnome').checked = Math.random() > 0.5;
+      
+      updateMemePreview();
+    }
+
+    function saveMeme() {
+      const canvas = document.getElementById('memeCanvas');
+      const topText = document.getElementById('memeTopText').value;
+      const bottomText = document.getElementById('memeBottomText').value;
+      
+      if (!topText && !bottomText) {
+        showAlert('Add some text to your meme first!');
+        return;
+      }
+      
+      const meme = {
+        id: Date.now(),
+        template: memeData.currentTemplate,
+        topText: topText,
+        bottomText: bottomText,
+        includeGnome: document.getElementById('includeGnome').checked,
+        timestamp: new Date().toISOString(),
+        dataUrl: canvas.toDataURL()
+      };
+      
+      memeData.savedMemes.push(meme);
+      localStorage.setItem('gnomeMemes', JSON.stringify(memeData.savedMemes));
+      
+      showAlert(`Meme saved! You now have ${memeData.savedMemes.length} saved memes.`);
+    }
+
+    function shareMeme() {
+      const topText = document.getElementById('memeTopText').value;
+      const bottomText = document.getElementById('memeBottomText').value;
+      const template = memeData.templates[memeData.currentTemplate].name;
+      
+      if (!topText && !bottomText) {
+        showAlert('Add some text to your meme first!');
+        return;
+      }
+      
+      const shareText = `Check out my gnome meme!\n\n"${topText}"\n"${bottomText}"\n\nTemplate: ${template}\nMade with Gnome Miners! 🧙‍♂️⛏️`;
+      
+      if (navigator.share) {
+        navigator.share({
+          title: 'My Gnome Meme',
+          text: shareText
+        });
+      } else {
+        // Fallback: copy to clipboard
+        navigator.clipboard.writeText(shareText).then(() => {
+          showAlert('Meme text copied to clipboard!');
+        });
+      }
+    }
+
+    function copyMemeText() {
+      const topText = document.getElementById('memeTopText').value;
+      const bottomText = document.getElementById('memeBottomText').value;
+      const template = memeData.templates[memeData.currentTemplate].name;
+      
+      const memeText = `${topText}\n${bottomText}\n\n[${template} Template]`;
+      
+      navigator.clipboard.writeText(memeText).then(() => {
+        showAlert('Meme text copied to clipboard!');
+      });
+    }
+
+    // GnomeTube System
+    let gnomeTubeData = {
+      currentVideo: null,
+      isPlaying: false,
+      isMuted: false,
+      currentTime: 0,
+      duration: 0,
+      videos: [
+        {
+          id: 1,
+          title: "How to Mine GNOME Tokens Like a Pro",
+          channel: "CryptoGnome",
+          views: 45230,
+          likes: 1200,
+          dislikes: 23,
+          duration: "12:34",
+          category: "mining",
+          description: "Learn the advanced techniques for maximizing your GNOME token mining efficiency. This comprehensive guide covers everything from pickaxe optimization to cave selection strategies.",
+          thumbnail: "⛏️",
+          uploadDate: "2 days ago"
+        },
+        {
+          id: 2,
+          title: "GNOME COIN TO THE MOON! 🚀 Price Prediction",
+          channel: "GnomeCrypto",
+          views: 89450,
+          likes: 3400,
+          dislikes: 156,
+          duration: "8:45",
+          category: "crypto",
+          description: "Technical analysis of GNOME token showing bullish patterns. Could we see 100x gains? Watch to find out my price targets and trading strategy.",
+          thumbnail: "🚀",
+          uploadDate: "1 day ago"
+        },
+        {
+          id: 3,
+          title: "Reacting to GNOME Memes - HILARIOUS!",
+          channel: "MemeGnome",
+          views: 156780,
+          likes: 8900,
+          dislikes: 234,
+          duration: "15:22",
+          category: "memes",
+          description: "Checking out the funniest GNOME memes from the community. Some of these had me rolling on the cave floor! Submit your memes in the comments.",
+          thumbnail: "😂",
+          uploadDate: "3 hours ago"
+        },
+        {
+          id: 4,
+          title: "Underground Gnome Anthem (Official Music Video)",
+          channel: "GnomeBeats",
+          views: 234560,
+          likes: 12300,
+          dislikes: 89,
+          duration: "3:45",
+          category: "music",
+          description: "The official anthem of the gnome mining community. Featuring epic beard solos and pickaxe percussion. Available on all streaming platforms!",
+          thumbnail: "🎵",
+          uploadDate: "1 week ago"
+        },
+        {
+          id: 5,
+          title: "🔴 LIVE: Emergency GNOME Market Analysis",
+          channel: "LiveGnome",
+          views: 12450,
+          likes: 890,
+          dislikes: 12,
+          duration: "LIVE",
+          category: "live",
+          description: "BREAKING: Major developments in the GNOME ecosystem. Join the live discussion as we analyze the latest market movements and community updates.",
+          thumbnail: "🔴",
+          uploadDate: "Live now"
+        },
+        {
+          id: 6,
+          title: "Building the Ultimate Gnome Mining Rig",
+          channel: "TechGnome",
+          views: 67890,
+          likes: 2100,
+          dislikes: 45,
+          duration: "18:56",
+          category: "mining",
+          description: "Step-by-step guide to building a professional gnome mining setup. Hardware recommendations, software configuration, and optimization tips included.",
+          thumbnail: "🔧",
+          uploadDate: "5 days ago"
+        },
+        {
+          id: 7,
+          title: "Why I'm ALL IN on GNOME Token (Not Financial Advice)",
+          channel: "InvestorGnome",
+          views: 123450,
+          likes: 5600,
+          dislikes: 890,
+          duration: "22:15",
+          category: "crypto",
+          description: "My complete thesis on why GNOME token could be the next 1000x gem. Covering tokenomics, use cases, team analysis, and market positioning.",
+          thumbnail: "💎",
+          uploadDate: "4 days ago"
+        },
+        {
+          id: 8,
+          title: "Gnome Dating Tips: How to Attract a Mining Partner",
+          channel: "LoveGnome",
+          views: 34560,
+          likes: 1800,
+          dislikes: 234,
+          duration: "9:33",
+          category: "lifestyle",
+          description: "Finding love in the underground mining community. Tips for gnome dating, beard grooming, and sharing your pickaxe collection on first dates.",
+          thumbnail: "💕",
+          uploadDate: "1 week ago"
         }
+      ],
+      filteredVideos: [],
+      userInteractions: {}
+    };
 
-        function getRandomLore() {
-            return GNOME_DATA.LORE[Math.floor(Math.random() * GNOME_DATA.LORE.length)];
+    function loadGnomeTube() {
+      gnomeTubeData.filteredVideos = [...gnomeTubeData.videos];
+      renderVideoList();
+      
+      // Load user interactions
+      const saved = localStorage.getItem('gnomeTubeInteractions');
+      if (saved) {
+        gnomeTubeData.userInteractions = JSON.parse(saved);
+      }
+    }
+
+    function renderVideoList() {
+      const videoList = document.getElementById('videoList');
+      let html = '';
+      
+      gnomeTubeData.filteredVideos.forEach(video => {
+        const isLiked = gnomeTubeData.userInteractions[video.id]?.liked;
+        const isDisliked = gnomeTubeData.userInteractions[video.id]?.disliked;
+        
+        html += `
+          <div class="video-item" onclick="playVideo(${video.id})" style="
+            border: 1px solid #ccc; 
+            margin-bottom: 8px; 
+            padding: 6px; 
+            cursor: pointer; 
+            background: ${gnomeTubeData.currentVideo?.id === video.id ? '#e6f3ff' : '#fff'};
+            font-size: 11px;
+          ">
+            <div style="display: flex; gap: 6px;">
+              <div style="
+                width: 60px; 
+                height: 45px; 
+                background: #333; 
+                display: flex; 
+                align-items: center; 
+                justify-content: center; 
+                font-size: 20px;
+                flex-shrink: 0;
+              ">${video.thumbnail}</div>
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-weight: bold; margin-bottom: 2px; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                  ${video.title}
+                </div>
+                <div style="color: #666; margin-bottom: 2px;">
+                  ${video.channel}
+                </div>
+                <div style="color: #666; font-size: 10px;">
+                  ${video.views.toLocaleString()} views • ${video.uploadDate}
+                </div>
+                <div style="color: #666; font-size: 10px;">
+                  ${video.duration} • 👍 ${video.likes} 👎 ${video.dislikes}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      
+      videoList.innerHTML = html;
+    }
+
+    function playVideo(videoId) {
+      const video = gnomeTubeData.videos.find(v => v.id === videoId);
+      if (!video) return;
+      
+      gnomeTubeData.currentVideo = video;
+      gnomeTubeData.isPlaying = true;
+      gnomeTubeData.currentTime = 0;
+      gnomeTubeData.duration = parseDuration(video.duration);
+      
+      // Update player
+      document.getElementById('videoPlayer').innerHTML = `
+        <div style="text-align: center; color: white;">
+          <div style="font-size: 48px; margin-bottom: 8px;">⏸️</div>
+          <div>Now Playing: ${video.title}</div>
+          <div style="font-size: 12px; margin-top: 4px; opacity: 0.8;">by ${video.channel}</div>
+        </div>
+      `;
+      
+      document.getElementById('currentVideoTitle').textContent = video.title;
+      document.getElementById('videoControls').style.display = 'block';
+      
+      // Update video info
+      document.getElementById('videoTitle').textContent = video.title;
+      document.getElementById('videoViews').textContent = `${video.views.toLocaleString()} views`;
+      document.getElementById('videoDate').textContent = video.uploadDate;
+      document.getElementById('videoChannel').textContent = video.channel;
+      document.getElementById('videoDescription').textContent = video.description;
+      
+      // Update like/dislike buttons
+      const userInteraction = gnomeTubeData.userInteractions[videoId] || {};
+      document.getElementById('likeCount').textContent = video.likes;
+      document.getElementById('dislikeCount').textContent = video.dislikes;
+      
+      const likeBtn = document.getElementById('likeBtn');
+      const dislikeBtn = document.getElementById('dislikeBtn');
+      
+      likeBtn.style.background = userInteraction.liked ? '#4CAF50' : '#C6C6C6';
+      dislikeBtn.style.background = userInteraction.disliked ? '#f44336' : '#C6C6C6';
+      
+      // Start fake playback
+      startVideoPlayback();
+      
+      // Re-render video list to highlight current video
+      renderVideoList();
+      
+      // Increment view count (fake)
+      video.views += Math.floor(Math.random() * 5) + 1;
+    }
+
+    function startVideoPlayback() {
+      if (gnomeTubeData.playbackInterval) {
+        clearInterval(gnomeTubeData.playbackInterval);
+      }
+      
+      gnomeTubeData.playbackInterval = setInterval(() => {
+        if (gnomeTubeData.isPlaying && gnomeTubeData.currentVideo) {
+          gnomeTubeData.currentTime += 1;
+          
+          if (gnomeTubeData.currentTime >= gnomeTubeData.duration) {
+            gnomeTubeData.currentTime = gnomeTubeData.duration;
+            gnomeTubeData.isPlaying = false;
+            clearInterval(gnomeTubeData.playbackInterval);
+          }
+          
+          updateVideoProgress();
         }
+      }, 1000);
+    }
 
-        // Initialize history display
-        updateHistoryDisplay();
-    </script>
+    function updateVideoProgress() {
+      const progress = (gnomeTubeData.currentTime / gnomeTubeData.duration) * 100;
+      document.getElementById('progressBar').style.width = `${progress}%`;
+      
+      const currentTimeStr = formatTime(gnomeTubeData.currentTime);
+      const durationStr = formatTime(gnomeTubeData.duration);
+      document.getElementById('videoTime').textContent = `${currentTimeStr} / ${durationStr}`;
+    }
+
+    function togglePlay() {
+      if (!gnomeTubeData.currentVideo) return;
+      
+      gnomeTubeData.isPlaying = !gnomeTubeData.isPlaying;
+      
+      const playerIcon = document.querySelector('#videoPlayer > div > div:first-child');
+      if (playerIcon) {
+        playerIcon.textContent = gnomeTubeData.isPlaying ? '⏸️' : '▶️';
+      }
+      
+      if (gnomeTubeData.isPlaying) {
+        startVideoPlayback();
+      }
+    }
+
+    function toggleMute() {
+      gnomeTubeData.isMuted = !gnomeTubeData.isMuted;
+      const muteBtn = document.querySelector('#videoControls button:last-child');
+      if (muteBtn) {
+        muteBtn.textContent = gnomeTubeData.isMuted ? '🔇' : '🔊';
+      }
+    }
+
+    function likeVideo() {
+      if (!gnomeTubeData.currentVideo) return;
+      
+      const videoId = gnomeTubeData.currentVideo.id;
+      const interaction = gnomeTubeData.userInteractions[videoId] || {};
+      
+      if (interaction.liked) {
+        // Unlike
+        interaction.liked = false;
+        gnomeTubeData.currentVideo.likes--;
+      } else {
+        // Like
+        interaction.liked = true;
+        gnomeTubeData.currentVideo.likes++;
+        
+        // Remove dislike if present
+        if (interaction.disliked) {
+          interaction.disliked = false;
+          gnomeTubeData.currentVideo.dislikes--;
+        }
+      }
+      
+      gnomeTubeData.userInteractions[videoId] = interaction;
+      localStorage.setItem('gnomeTubeInteractions', JSON.stringify(gnomeTubeData.userInteractions));
+      
+      // Update UI
+      playVideo(videoId);
+    }
+
+    function dislikeVideo() {
+      if (!gnomeTubeData.currentVideo) return;
+      
+      const videoId = gnomeTubeData.currentVideo.id;
+      const interaction = gnomeTubeData.userInteractions[videoId] || {};
+      
+      if (interaction.disliked) {
+        // Remove dislike
+        interaction.disliked = false;
+        gnomeTubeData.currentVideo.dislikes--;
+      } else {
+        // Dislike
+        interaction.disliked = true;
+        gnomeTubeData.currentVideo.dislikes++;
+        
+        // Remove like if present
+        if (interaction.liked) {
+          interaction.liked = false;
+          gnomeTubeData.currentVideo.likes--;
+        }
+      }
+      
+      gnomeTubeData.userInteractions[videoId] = interaction;
+      localStorage.setItem('gnomeTubeInteractions', JSON.stringify(gnomeTubeData.userInteractions));
+      
+      // Update UI
+      playVideo(videoId);
+    }
+
+    function subscribeChannel() {
+      if (!gnomeTubeData.currentVideo) return;
+      
+      const channel = gnomeTubeData.currentVideo.channel;
+      showAlert(`Subscribed to ${channel}! 🔔 You'll get notifications for new videos.`);
+    }
+
+    function shareVideo() {
+      if (!gnomeTubeData.currentVideo) return;
+      
+      const video = gnomeTubeData.currentVideo;
+      const shareText = `Check out this video on GnomeTube!\n\n"${video.title}"\nby ${video.channel}\n\n${video.views.toLocaleString()} views • ${video.uploadDate}`;
+      
+      if (navigator.share) {
+        navigator.share({
+          title: video.title,
+          text: shareText
+        });
+      } else {
+        navigator.clipboard.writeText(shareText).then(() => {
+          showAlert('Video link copied to clipboard!');
+        });
+      }
+    }
+
+    function searchGnomeTube() {
+      const query = document.getElementById('gnomeTubeSearch').value.toLowerCase();
+      
+      if (!query) {
+        gnomeTubeData.filteredVideos = [...gnomeTubeData.videos];
+      } else {
+        gnomeTubeData.filteredVideos = gnomeTubeData.videos.filter(video => 
+          video.title.toLowerCase().includes(query) ||
+          video.channel.toLowerCase().includes(query) ||
+          video.description.toLowerCase().includes(query)
+        );
+      }
+      
+      renderVideoList();
+    }
+
+    function filterByCategory() {
+      const category = document.getElementById('gnomeTubeCategory').value;
+      const query = document.getElementById('gnomeTubeSearch').value.toLowerCase();
+      
+      let filtered = gnomeTubeData.videos;
+      
+      if (category !== 'all') {
+        filtered = filtered.filter(video => video.category === category);
+      }
+      
+      if (query) {
+        filtered = filtered.filter(video => 
+          video.title.toLowerCase().includes(query) ||
+          video.channel.toLowerCase().includes(query) ||
+          video.description.toLowerCase().includes(query)
+        );
+      }
+      
+      gnomeTubeData.filteredVideos = filtered;
+      renderVideoList();
+    }
+
+    function parseDuration(duration) {
+      if (duration === 'LIVE') return 0;
+      
+      const parts = duration.split(':');
+      let seconds = 0;
+      
+      if (parts.length === 2) {
+        seconds = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+      } else if (parts.length === 3) {
+        seconds = parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseInt(parts[2]);
+      }
+      
+      return seconds;
+    }
+
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function initializeTrading() {
+      // Trading initialization code already exists above
+    }
+  </script>
 </body>
 </html>
